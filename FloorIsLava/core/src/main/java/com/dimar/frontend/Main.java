@@ -47,27 +47,22 @@ public class Main extends ApplicationAdapter {
             float maxX = Gdx.graphics.getWidth() - 200f;
 
             if (kiriKanan == 1) {
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    + groundTerakhir.widthAcuan + maksGap;
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() + groundTerakhir.widthAcuan + maksGap;
             } else {
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    - (groundTerakhir.widthAcuan + maksGap);
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() - (groundTerakhir.widthAcuan + maksGap);
             }
 
             if (titikAcuan < minX) {
                 kiriKanan = 1;
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    + groundTerakhir.widthAcuan + maksGap;
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() + groundTerakhir.widthAcuan + maksGap;
             }
 
             if (titikAcuan > maxX) {
                 kiriKanan = 0;
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    - (groundTerakhir.widthAcuan + maksGap);
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() - (groundTerakhir.widthAcuan + maksGap);
             }
 
             titikAcuan = MathUtils.clamp(titikAcuan, minX, maxX);
-
             groundsFactory.groundsPool.obtain(titikAcuan, groundTerakhir.posisiY + y, widthAcuan, kiriKanan);
         }
     }
@@ -148,27 +143,22 @@ public class Main extends ApplicationAdapter {
             float minX = 200f;
             float maxX = Gdx.graphics.getWidth() - 200f;
             if (kiriKanan == 1) {
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    + groundTerakhir.widthAcuan + maksGap;
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() + groundTerakhir.widthAcuan + maksGap;
             } else {
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    - (groundTerakhir.widthAcuan + maksGap);
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() - (groundTerakhir.widthAcuan + maksGap);
             }
 
             if (titikAcuan < minX) {
                 kiriKanan = 1;
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    + groundTerakhir.widthAcuan + maksGap;
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() + groundTerakhir.widthAcuan + maksGap;
             }
 
             if (titikAcuan > maxX) {
                 kiriKanan = 0;
-                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya()
-                    - (groundTerakhir.widthAcuan + maksGap);
+                titikAcuan = groundTerakhir.getPosisiAcuanSelanjutnya() - (groundTerakhir.widthAcuan + maksGap);
             }
 
             titikAcuan = MathUtils.clamp(titikAcuan, minX, maxX);
-
             groundsFactory.groundsPool.obtain(titikAcuan, groundTerakhir.posisiY + y, widthAcuan, kiriKanan);
         }
     }
