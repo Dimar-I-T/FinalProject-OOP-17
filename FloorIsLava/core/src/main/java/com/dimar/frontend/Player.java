@@ -9,18 +9,23 @@ import com.badlogic.gdx.math.Vector2;
 public class Player {
     private Vector2 velocity;
     private Vector2 position;
+    private Vector2 startPosition;
     private Rectangle collider;
-    private float speed = 300f;
-    private float lompatan = 1000f;
-    private float gravity = 2000f;
+    public static float speed = 350f;
+    public static float lompatan = 1000f;
+    public static float gravity = 2000f;
     private float WIDTH = 64f;
     private float HEIGHT = 64f;
-    private boolean kiri = false;
-    private boolean kanan = false;
+    private float Delta;
     private boolean isColliding = false;
+    private float widthAwal;
+    private boolean isDead;
+    private float verticalDistanceTravelled = 0f;
 
     public Player(Vector2 startPosition) {
+        widthAwal = Gdx.graphics.getWidth();
         this.position = startPosition;
+        this.startPosition = startPosition;
         velocity = new Vector2(0, 0);
         collider = new Rectangle(startPosition.x, startPosition.y, WIDTH, HEIGHT);
     }
@@ -31,17 +36,20 @@ public class Player {
     }
 
     public void update(float delta) {
-        applyGravity(delta);
-        updatePosition(delta);
+        if (!isDead) {
+            applyGravity(delta);
+            updatePositionY(delta);
+            updateVerticalDistance();
+            Delta = delta;
+        }
+
         updateCollider();
     }
 
-    public void setKiri(boolean kiri) {
-        this.kiri = kiri;
-    }
-
-    public void setKanan(boolean kanan) {
-        this.kanan = kanan;
+    private void updateVerticalDistance() {
+        if (verticalDistanceTravelled <= position.y) {
+            verticalDistanceTravelled = position.y;
+        }
     }
 
     private void applyGravity(float delta) {
@@ -60,15 +68,16 @@ public class Player {
         }
     }
 
-    private void updatePosition(float delta) {
-        position.y += velocity.y * delta;
-        if (kiri) {
-            position.x -= speed * delta;
-        }
+    public void Kiri() {
+        position.x -= speed * Delta;
+    }
 
-        if (kanan) {
-            position.x += speed * delta;
-        }
+    public void Kanan() {
+        position.x += speed * Delta;
+    }
+
+    private void updatePositionY(float delta) {
+        position.y += velocity.y * delta;
     }
 
     public void updateCollider() {
@@ -127,33 +136,43 @@ public class Player {
         this.isColliding = grounded;
     }
 
-    public void checkBoundaries() {
-        if (position.x > Gdx.graphics.getWidth() - WIDTH) {
-            position.x = Gdx.graphics.getWidth() - WIDTH;
+    public void checkBoundaries(float batasKiri) {
+//        System.out.println(batasKiri - (widthAwal - batasKiri) / 2f);
+//        System.out.println("x = " + position.x);
+        if (position.x > (batasKiri + widthAwal) / 2f - WIDTH) {
+            position.x = (batasKiri + widthAwal) / 2f - WIDTH;
             velocity.x = 0;
         }
 
-        if (position.x < 0) {
-            position.x = 0;
+        if (position.x < (widthAwal - batasKiri) / 2f) {
+            position.x = (widthAwal - batasKiri) / 2f;
             velocity.x = 0;
         }
 
         updateCollider();
     }
 
+    public void die() {
+        isDead = true;
+        velocity.set(0, 0);
+    }
+
+    public void reset() {
+        isDead = false;
+        position.set(startPosition);
+        velocity.set(0, 0);
+        verticalDistanceTravelled = 0f;
+    }
+
+    public boolean getIsDead() {
+        return isDead;
+    }
+
     public Vector2 getPosition() {
         return position;
     }
 
-    public float getGravity() {
-        return gravity;
-    }
-
-    public float getLompatan() {
-        return lompatan;
-    }
-
-    public float getSpeed() {
-        return speed;
+    public float getVerticalDistanceTravelled() {
+        return verticalDistanceTravelled;
     }
 }

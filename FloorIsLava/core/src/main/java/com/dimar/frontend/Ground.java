@@ -1,4 +1,5 @@
 package com.dimar.frontend;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -19,14 +20,6 @@ public class Ground {
         this.height = height;
         this.position = startPosition;
         collider = new Rectangle(startPosition.x, startPosition.y, width, height);
-    }
-
-    public void initialize(float x, float y, float width, float height) {
-        this.width = width;
-        this.height = height;
-        this.position.set(x, y);
-        this.collider.setPosition(x, y);
-        this.active = true;
     }
 
     public boolean isColliding(Rectangle playerCollider) {
