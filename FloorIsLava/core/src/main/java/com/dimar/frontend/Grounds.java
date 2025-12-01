@@ -2,6 +2,7 @@ package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -10,14 +11,15 @@ import java.util.Random;
 
 public class Grounds {
     public List<Ground> grounds = new ArrayList<>();
+    public Rectangle collider;
     public float posisiAcuan;
-    private float gapMin = 250f;
+    private float gapMin = 120f;
     private float widthMin = 100f;
     private float screenWidth = Gdx.graphics.getWidth();
     private float height = 20f;
     private Random random = new Random();
     public float widthAcuan;
-    private float maxWidth = 250f;
+    private float maxWidth = 200f;
     public float posisiY;
     private float maxGap = 2 * Player.speed * Player.lompatan / Player.gravity;
     private boolean active;
@@ -27,6 +29,7 @@ public class Grounds {
     }
 
     public void initialize(float posisiAcuan, float posisiY, float widthAcuan, int kiriKanan) {
+        collider = new Rectangle(posisiAcuan, posisiY, screenWidth, height);
         grounds.clear();
         this.posisiY = posisiY;
         this.posisiAcuan = posisiAcuan;
@@ -61,6 +64,10 @@ public class Grounds {
                 x = ground.getPosition().x - gap;
             }
         }
+    }
+
+    public boolean isColliding(Rectangle otherCollider) {
+        return collider.overlaps(otherCollider);
     }
 
     public void render(ShapeRenderer shapeRenderer) {

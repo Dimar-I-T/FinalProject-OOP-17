@@ -24,8 +24,8 @@ public class Player {
 
     public Player(Vector2 startPosition) {
         widthAwal = Gdx.graphics.getWidth();
-        this.position = startPosition;
-        this.startPosition = startPosition;
+        this.position = new Vector2(startPosition.x, startPosition.y);
+        this.startPosition = new Vector2(startPosition.x, startPosition.y);
         velocity = new Vector2(0, 0);
         collider = new Rectangle(startPosition.x, startPosition.y, WIDTH, HEIGHT);
     }
@@ -43,6 +43,7 @@ public class Player {
             Delta = delta;
         }
 
+        //System.out.println(isDead);
         updateCollider();
     }
 
@@ -153,12 +154,18 @@ public class Player {
     }
 
     public void die() {
-        isDead = true;
+        if (!isDead) {
+            isDead = true;
+        }
+
         velocity.set(0, 0);
     }
 
     public void reset() {
-        isDead = false;
+        if (isDead) {
+            isDead = false;
+        }
+
         position.set(startPosition);
         velocity.set(0, 0);
         verticalDistanceTravelled = 0f;
@@ -166,6 +173,14 @@ public class Player {
 
     public boolean getIsDead() {
         return isDead;
+    }
+
+    public void setIsDead(boolean isDead) {
+        this.isDead = isDead;
+    }
+
+    public Rectangle getCollider() {
+        return collider;
     }
 
     public Vector2 getPosition() {

@@ -10,6 +10,8 @@ public class ScoreUIObserver implements Observer {
     private BitmapFont font, font1;
     private SpriteBatch batch;
     private int score;
+    private float width = Gdx.graphics.getWidth(), height = Gdx.graphics.getHeight();
+    private float widthAwal = Gdx.graphics.getWidth(), heightAwal = Gdx.graphics.getHeight();
     public ScoreUIObserver() {
         font = new BitmapFont(Gdx.files.internal("arial.fnt"));
         font.setColor(Color.WHITE);
@@ -21,7 +23,7 @@ public class ScoreUIObserver implements Observer {
     @Override
     public void update(int score) {
         this.score = score;
-        System.out.println("Score has been updated to " + score);
+        //System.out.println("Score has been updated to " + score);
     }
 
     public void render(int score, int coins) {
@@ -29,7 +31,7 @@ public class ScoreUIObserver implements Observer {
         String teks = "Score: " + score;
         //String teks1 = "Coins: " + coins;
         GlyphLayout layout = new GlyphLayout(font, teks);
-        font.draw(batch, teks, Gdx.graphics.getWidth() - layout.width - 10, Gdx.graphics.getHeight()  - 10);
+        font.draw(batch, teks, width - layout.width - (width - widthAwal) - 10, height - (height - heightAwal) - 10);
         //font1.draw(batch, teks1, Gdx.graphics.getWidth() - layout.width - 10,Gdx.graphics.getHeight() - 20 - layout.height);
         batch.end();
     }
@@ -37,6 +39,11 @@ public class ScoreUIObserver implements Observer {
     public void dispose() {
         batch.dispose();
         font.dispose();
+    }
+
+    public void updateWH(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public int getScore() {

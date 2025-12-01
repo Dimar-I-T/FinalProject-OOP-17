@@ -26,23 +26,26 @@ public class Main extends ApplicationAdapter {
     private GameManager gameManager;
     private Player player;
     private Ground ground;
+    private Lava lava;
     private OrthographicCamera camera;
     private ScoreUIObserver scoreUIObserver;
     private Random random = new Random();
     private GroundsFactory groundsFactory;
     private float maxWidth, maxHeight;
-    private float widthAwal;
+    private float widthAwal, heightAwal;
     private List<Command> playerCommand;
     private int lastLoggedScore = -1;
     float currentScore;
     private float GAP = 200f;
     private float HEIGHT_PLATFORM = 20f;
-    private float MIN_WIDTH = 200f;
-    private float MAX_WIDTH = 250f;
+    private float MIN_WIDTH = 150f;
+    private float MAX_WIDTH = 200f;
+    private float POSISI_Y_AWAL = -1200f;
 
     @Override
     public void create() {
         widthAwal = Gdx.graphics.getWidth();
+        heightAwal = Gdx.graphics.getHeight();
         maxWidth = Gdx.graphics.getWidth();
         maxHeight = Gdx.graphics.getHeight();
         shapeRenderer = new ShapeRenderer();
@@ -53,6 +56,7 @@ public class Main extends ApplicationAdapter {
         playerCommand.add(new KiriCommand(player));
         playerCommand.add(new KananCommand(player));
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
+        lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 3 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
         float y = GAP;
@@ -80,27 +84,37 @@ public class Main extends ApplicationAdapter {
 
         player.render(shapeRenderer);
         ground.render(shapeRenderer);
-        scoreUIObserver.render(scoreUIObserver.getScore(), 0);
+        lava.render(shapeRenderer);
         shapeRenderer.end();
+        scoreUIObserver.render(scoreUIObserver.getScore(), 0);
     }
 
     public void update(float delta) {
+        if (player.getIsDead()) {
+            reset();
+            return;
+        }
+
         for (Command command : playerCommand) {
             command.execute();
         }
 
-        camera.position.set(camera.position.x, player.getPosition().y + maxWidth * 0.05f, 0);
+        camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
         camera.update();
+        //System.out.println(camera.position.x);
         player.update(delta);
+        checkLavaCollision();
+        if (player.getIsDead()) {
+            return;
+        }
+
+        lava.update(delta);
         player.setGrounded(false);
         player.handleGroundCollision(ground);
 
-        float bottomScreen = camera.position.y - maxHeight / 2f;
-
         List<Grounds> toRelease = new ArrayList<>();
-
         for (Grounds grounds : groundsFactory.getInUse()) {
-            if (grounds.posisiY < bottomScreen - GAP) {
+            if (lava.isCollidingWithGround(grounds.collider)) {
                 toRelease.add(grounds);
             }
 
@@ -122,7 +136,7 @@ public class Main extends ApplicationAdapter {
 
         if (currentScoreMeters > previousScoreMeters) {
             if (currentScoreMeters != lastLoggedScore) {
-                System.out.println("Score: " + currentScoreMeters);
+                //System.out.println("Score: " + currentScoreMeters);
                 lastLoggedScore = currentScoreMeters;
                 currentScore = currentScoreMeters;
             }
@@ -131,6 +145,13 @@ public class Main extends ApplicationAdapter {
         }
 
         player.checkBoundaries(maxWidth);
+        //System.out.println("x player = " + player.getPosition().x);
+    }
+
+    public void checkLavaCollision() {
+        if (lava.isCollidingWithPlayer(player.getCollider())) {
+            player.die();
+        }
     }
 
     @Override
@@ -139,6 +160,7 @@ public class Main extends ApplicationAdapter {
         camera.viewportWidth = width;
         maxWidth = width;
         maxHeight = height;
+        scoreUIObserver.updateWH(width, height);
     }
 
     public void createGrounds() {
@@ -179,6 +201,26 @@ public class Main extends ApplicationAdapter {
     float maxGap(float vx, float vy, float g, float gap, float hPlatform) {
         float lp = vy * vy / (2 * g);
         return (float) (vx * ((vy + Math.sqrt(vy * vy - 2 * g * lp)) / g + Math.sqrt((2 * (lp - (gap + hPlatform)) / g))));
+    }
+
+    public void reset() {
+        //System.out.println("terpanggil");
+        lava.reset(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL));
+        player.reset();
+        lastLoggedScore = -1;
+        currentScore = 0f;
+        gameManager.setScore(0);
+
+        groundsFactory.releaseAll();
+
+        camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
+        camera.update();
+
+        float y = GAP;
+        float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
+        float titikAcuan = Gdx.graphics.getWidth() / 2f;
+        groundsFactory.groundsPool.obtain(titikAcuan, y, widthAcuan, 1);
+        createGrounds();
     }
 
     @Override
