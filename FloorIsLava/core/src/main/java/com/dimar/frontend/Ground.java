@@ -27,7 +27,12 @@ public class Ground {
     }
 
     public void render(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1f);
+        if (acuan) {
+            shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1f);
+        }else {
+            shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1f);
+        }
+
         shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
     }
 

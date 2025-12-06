@@ -23,16 +23,13 @@ public class ScoreUIObserver implements Observer {
     @Override
     public void update(int score) {
         this.score = score;
-        //System.out.println("Score has been updated to " + score);
     }
 
     public void render(int score, int coins) {
         batch.begin();
         String teks = "Score: " + score;
-        //String teks1 = "Coins: " + coins;
         GlyphLayout layout = new GlyphLayout(font, teks);
         font.draw(batch, teks, width - layout.width - (width - widthAwal) - 10, height - (height - heightAwal) - 10);
-        //font1.draw(batch, teks1, Gdx.graphics.getWidth() - layout.width - 10,Gdx.graphics.getHeight() - 20 - layout.height);
         batch.end();
     }
 

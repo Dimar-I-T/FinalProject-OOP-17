@@ -66,10 +66,6 @@ public class Grounds {
         }
     }
 
-    public boolean isColliding(Rectangle otherCollider) {
-        return collider.overlaps(otherCollider);
-    }
-
     public void render(ShapeRenderer shapeRenderer) {
         for (Ground g : grounds) {
             g.render(shapeRenderer);

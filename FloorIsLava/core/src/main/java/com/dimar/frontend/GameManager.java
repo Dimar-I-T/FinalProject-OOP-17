@@ -5,12 +5,10 @@ import com.dimar.frontend.observers.ScoreManager;
 
 public class GameManager {
     private static GameManager instance;
-    private int score;
     private ScoreManager scoreManager;
     private boolean gameActive;
 
     private GameManager() {
-        score = 0;
         scoreManager = new ScoreManager();
         scoreManager.setScore(0);
         gameActive = false;
@@ -25,7 +23,6 @@ public class GameManager {
     }
 
     public void startGame() {
-        score = 0;
         scoreManager.setScore(0);
         gameActive = true;
         System.out.println("Game Started!");
