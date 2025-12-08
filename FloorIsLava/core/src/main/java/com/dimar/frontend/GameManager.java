@@ -7,6 +7,7 @@ public class GameManager {
     private static GameManager instance;
     private ScoreManager scoreManager;
     private boolean gameActive;
+    int coinsCollected = 0;
 
     private GameManager() {
         scoreManager = new ScoreManager();
@@ -34,8 +35,20 @@ public class GameManager {
         }
     }
 
+    public void addCoin() {
+        coinsCollected++;
+    }
+
+    public int getCoinsCollected() {
+        return this.coinsCollected;
+    }
+
     public int getScore() {
         return scoreManager.getScore();
+    }
+
+    public void setCoinsCollected(int coins) {
+        this.coinsCollected = coins;
     }
 
     public void addObserver(Observer observer) {

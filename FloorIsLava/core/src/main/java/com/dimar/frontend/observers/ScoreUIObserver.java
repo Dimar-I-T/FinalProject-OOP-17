@@ -28,8 +28,10 @@ public class ScoreUIObserver implements Observer {
     public void render(int score, int coins) {
         batch.begin();
         String teks = "Score: " + score;
+        String teks1 = "Coins: " + coins;
         GlyphLayout layout = new GlyphLayout(font, teks);
         font.draw(batch, teks, width - layout.width - (width - widthAwal) - 10, height - (height - heightAwal) - 10);
+        font1.draw(batch, teks1, width - layout.width - (width - widthAwal) - 10, height - (height - heightAwal) - 20 - layout.height);
         batch.end();
     }
 

@@ -34,6 +34,10 @@ public class Lava {
         return groundCollider.overlaps(collider);
     }
 
+    public boolean isColliding(Rectangle collider) {
+        return collider.overlaps(this.collider);
+    }
+
     public void update(float delta) {
         position.y += velocity.y * delta;
         collider.setPosition(position.x, position.y);
