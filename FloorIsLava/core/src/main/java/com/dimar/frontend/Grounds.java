@@ -4,9 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.dimar.frontend.factories.CoinFactory;
-import com.dimar.frontend.strategies.CoinPattern;
-import com.dimar.frontend.strategies.LinePattern;
 
 import java.util.ArrayList;
 import java.util.List;

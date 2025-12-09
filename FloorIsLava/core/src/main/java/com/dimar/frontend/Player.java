@@ -21,6 +21,15 @@ public class Player {
     private float widthAwal;
     private boolean isDead;
     private float verticalDistanceTravelled = 0f;
+    private float waktuDash = 0.1f;
+    private float jarakDash = 500f;
+    boolean isDashing = false;
+    float dashTimeLeft = 0f;
+    float kecepatanDash;
+
+    int arahDash = 0;
+
+    private Ground groundSekarang;
 
     public Player(Vector2 startPosition) {
         widthAwal = Gdx.graphics.getWidth();
@@ -36,6 +45,16 @@ public class Player {
     }
 
     public void update(float delta) {
+        if (isDashing) {
+            position.x += arahDash * kecepatanDash * delta;
+            dashTimeLeft -= delta;
+
+            if (dashTimeLeft <= 0f) {
+                isDashing = false;
+                arahDash = 0;
+            }
+        }
+
         if (!isDead) {
             applyGravity(delta);
             updatePositionY(delta);
@@ -67,6 +86,28 @@ public class Player {
             velocity.y = lompatan;
             isColliding = false;
         }
+    }
+
+    public void startDashKiri() {
+        if (!isDashing) {
+            isDashing = true;
+            dashTimeLeft = waktuDash;
+            kecepatanDash = jarakDash / waktuDash;
+            arahDash = -1;
+        }
+    }
+
+    public void startDashKanan() {
+        if (!isDashing) {
+            isDashing = true;
+            dashTimeLeft = waktuDash;
+            kecepatanDash = jarakDash / waktuDash;
+            arahDash = 1;
+        }
+    }
+
+    public void setJarakDash(float jarakDash) {
+        this.jarakDash = jarakDash;
     }
 
     public void Kiri() {
@@ -124,6 +165,7 @@ public class Player {
                 position.y += overlapY;
                 velocity.y = 0;
                 isColliding = true;
+                groundSekarang = ground;
             } else {
                 position.y -= overlapY;
                 if (velocity.y > 0) velocity.y = 0;
@@ -169,6 +211,10 @@ public class Player {
         position.set(startPosition);
         velocity.set(0, 0);
         verticalDistanceTravelled = 0f;
+    }
+
+    public Ground getGroundSekarang() {
+        return this.groundSekarang;
     }
 
     public boolean getIsDead() {

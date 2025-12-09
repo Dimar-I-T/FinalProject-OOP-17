@@ -18,8 +18,6 @@ public class MenuState implements GameState {
     private GameStateManager gsm;
     private Stage stage;
     private Skin skin;
-    private TextField nameField;
-    private TextButton startButton;
 
     public MenuState(GameStateManager gsm) {
         this.gsm = gsm;

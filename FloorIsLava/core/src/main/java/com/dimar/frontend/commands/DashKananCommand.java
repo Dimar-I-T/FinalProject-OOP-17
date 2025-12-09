@@ -1,0 +1,19 @@
+package com.dimar.frontend.commands;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.dimar.frontend.Player;
+
+public class DashKananCommand implements Command{
+    private Player player;
+    public DashKananCommand(Player player) {
+        this.player = player;
+    }
+
+    @Override
+    public void execute() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            player.startDashKanan();
+        }
+    }
+}

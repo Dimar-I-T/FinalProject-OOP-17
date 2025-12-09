@@ -16,6 +16,7 @@ public class GameOverState implements GameState {
     private float width, widthAwal, height, heightAwal;
 
     public GameOverState(GameStateManager gsm) {
+        System.out.println("You are dead.");
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         width = Gdx.graphics.getWidth();
@@ -31,7 +32,7 @@ public class GameOverState implements GameState {
 
     @Override
     public void update(float delta) {
-        System.out.println("You are dead.");
+        //System.out.println("You are dead.");
         if (Gdx.input.isKeyJustPressed((Input.Keys.SPACE))) {
             gsm.set(new PlayingState(gsm));
         }

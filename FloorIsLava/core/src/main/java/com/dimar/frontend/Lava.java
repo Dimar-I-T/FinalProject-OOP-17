@@ -49,6 +49,10 @@ public class Lava {
         shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
     }
 
+    public float getKecepatan() {
+        return this.kecepatan;
+    }
+
     public float getHeight() {
         return height;
     }
