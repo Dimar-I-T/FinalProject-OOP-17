@@ -52,4 +52,8 @@ public class GameStateManager {
             states.pop().dispose();
         }
     }
+
+    public GameState getCurrentState(){
+        return states.peek();
+    }
 }

@@ -1,5 +1,6 @@
 package com.dimar.frontend;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -11,6 +12,8 @@ public class Ground {
     private final Rectangle collider;
     private boolean acuan = false;
     private boolean active;
+
+    private Texture texture;
 
     public Ground(Vector2 startPosition, float width, float height, boolean acuan) {
         this.width = width;
@@ -48,5 +51,9 @@ public class Ground {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 }

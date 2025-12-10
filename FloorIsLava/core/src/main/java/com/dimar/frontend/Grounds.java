@@ -1,6 +1,8 @@
 package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,8 +21,15 @@ public class Grounds {
     public float posisiY;
     private final float maxGap = 2 * Player.speed * Player.lompatan / Player.gravity;
     private boolean active;
+    private Texture edgeKanan;
+    private Texture middle;
+    private Texture edgeKiri;
 
     public Grounds(float posisiAcuan, float posisiY, float widthAcuan, int kiriKanan) {
+        edgeKanan = new Texture("wood_edge2.png");
+        middle = new Texture("wood_middle.png");
+        edgeKiri = new Texture("wood_edge1.png");
+
         initialize(posisiAcuan, posisiY, widthAcuan, kiriKanan);
     }
 
@@ -66,10 +75,27 @@ public class Grounds {
         }
     }
 
-    public void render(ShapeRenderer shapeRenderer) {
+    public void renderShape(ShapeRenderer shapeRenderer) {
         for (Ground g : grounds) {
             g.render(shapeRenderer);
         }
+    }
+
+    public void render(SpriteBatch batch){
+        // MASIH BELOM BENER
+        batch.begin();
+        for (Ground g: grounds){
+            float scaledWidth = g.getHeight();
+            float startX = g.getPosition().x - g.getWidth() / 2f;
+            float boundX = startX + g.getWidth();
+
+            batch.draw(edgeKiri, startX + scaledWidth / 2f, g.getPosition().y, scaledWidth, g.getHeight());
+            for (float x = startX + scaledWidth; x < boundX; x += scaledWidth){
+                batch.draw(middle, x, g.getPosition().y, scaledWidth, g.getHeight());
+            }
+            batch.draw(edgeKanan, boundX - scaledWidth / 2f, g.getPosition().y, scaledWidth, g.getHeight());
+        }
+        batch.end();
     }
 
     public float getPosisiAcuan() {

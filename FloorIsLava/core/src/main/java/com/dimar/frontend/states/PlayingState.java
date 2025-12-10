@@ -54,6 +54,8 @@ public class PlayingState implements GameState {
     List<Coin> coinsToRelease;
     private boolean bisaDash = false;
 
+    private Background background;
+
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
         dashUI = new DashUI();
@@ -90,6 +92,8 @@ public class PlayingState implements GameState {
         gameManager = GameManager.getInstance();
         gameManager.addObserver(scoreUIObserver);
         gameManager.startGame();
+
+        background = new Background();
     }
 
     @Override
@@ -99,13 +103,14 @@ public class PlayingState implements GameState {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (Grounds grounds1 : groundsFactory.getInUse()) {
-            grounds1.render(shapeRenderer);
+            grounds1.renderShape(shapeRenderer);
         }
 
         for (Coin coin : coinFactory.getInUse()) {
             coin.renderShape(shapeRenderer);
         }
 
+        background.render(spriteBatch);
         player.render(shapeRenderer);
         ground.render(shapeRenderer);
         lava.render(shapeRenderer);
@@ -129,6 +134,8 @@ public class PlayingState implements GameState {
 
         camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
         camera.update();
+
+        background.update(camera.position.x);
         player.update(delta);
         toRelease.clear();
         coinsToRelease.clear();

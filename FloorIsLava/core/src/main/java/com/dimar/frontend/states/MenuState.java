@@ -12,13 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.dimar.frontend.Background;
 
 public class MenuState implements GameState {
+    private Background background;
     private final GameStateManager gsm;
     private final Stage stage;
     private Skin skin;
 
     public MenuState(GameStateManager gsm) {
+        background = new Background();
         this.gsm = gsm;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -106,6 +109,7 @@ public class MenuState implements GameState {
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
+        background.render(batch);
         stage.draw();
     }
 
