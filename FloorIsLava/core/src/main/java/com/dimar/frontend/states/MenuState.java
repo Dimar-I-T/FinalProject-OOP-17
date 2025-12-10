@@ -12,11 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.dimar.frontend.GameManager;
 
 public class MenuState implements GameState {
-    private GameStateManager gsm;
-    private Stage stage;
+    private final GameStateManager gsm;
+    private final Stage stage;
     private Skin skin;
 
     public MenuState(GameStateManager gsm) {

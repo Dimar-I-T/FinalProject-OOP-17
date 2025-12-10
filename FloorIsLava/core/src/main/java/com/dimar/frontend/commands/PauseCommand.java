@@ -7,8 +7,8 @@ import com.dimar.frontend.states.PauseState;
 import com.dimar.frontend.states.PlayingState;
 
 public class PauseCommand implements Command {
-    private GameStateManager gsm;
-    private PlayingState playingState;
+    private final GameStateManager gsm;
+    private final PlayingState playingState;
 
     public PauseCommand(GameStateManager gsm, PlayingState playingState) {
         this.gsm = gsm;

@@ -13,15 +13,11 @@ public class Grounds {
     public List<Ground> grounds = new ArrayList<>();
     public Rectangle collider;
     public float posisiAcuan;
-    private float gapMin = 120f;
-    private float widthMin = 100f;
     private float screenWidth = Gdx.graphics.getWidth();
-    private float height = 20f;
-    private Random random = new Random();
+    private final Random random = new Random();
     public float widthAcuan;
-    private float maxWidth = 200f;
     public float posisiY;
-    private float maxGap = 2 * Player.speed * Player.lompatan / Player.gravity;
+    private final float maxGap = 2 * Player.speed * Player.lompatan / Player.gravity;
     private boolean active;
 
     public Grounds(float posisiAcuan, float posisiY, float widthAcuan, int kiriKanan) {
@@ -29,6 +25,7 @@ public class Grounds {
     }
 
     public void initialize(float posisiAcuan, float posisiY, float widthAcuan, int kiriKanan) {
+        float height = 20f;
         collider = new Rectangle(posisiAcuan, posisiY, screenWidth, height);
         grounds.clear();
         this.posisiY = posisiY;
@@ -40,8 +37,11 @@ public class Grounds {
         float tambahKanan = 0;
 
         // kanan
+        float gapMin = 120f;
         float gap = tambahKanan + gapMin + random.nextFloat() * (maxGap - gapMin);
         float x = groundAcuan.getPosition().x + widthAcuan + gap;
+        float widthMin = 100f;
+        float maxWidth = 200f;
         if (kiriKanan == 1) {
             while (x < screenWidth) {
                 float width = widthMin + random.nextFloat() * (maxWidth - widthMin);

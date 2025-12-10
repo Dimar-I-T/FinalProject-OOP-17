@@ -26,43 +26,38 @@ import java.util.Random;
 
 public class PlayingState implements GameState {
     private final GameStateManager gsm;
-    private ShapeRenderer shapeRenderer;
-    private GameManager gameManager;
-    private Player player;
-    private Ground ground;
-    private Lava lava;
-    private OrthographicCamera camera;
-    private ScoreUIObserver scoreUIObserver;
-    private DashUI dashUI;
-    private Random random = new Random();
-    private GroundsFactory groundsFactory;
+    private final ShapeRenderer shapeRenderer;
+    private final GameManager gameManager;
+    private final Player player;
+    private final Ground ground;
+    private final Lava lava;
+    private final OrthographicCamera camera;
+    private final ScoreUIObserver scoreUIObserver;
+    private final DashUI dashUI;
+    private final Random random = new Random();
+    private final GroundsFactory groundsFactory;
     private float maxWidth, maxHeight;
-    private float widthAwal, heightAwal;
-    private List<Command> playerCommand;
-    private List<Command> dashCommand;
+    private final float widthAwal;
+    private final List<Command> playerCommand;
+    private final List<Command> dashCommand;
     private int lastLoggedScore = -1;
     float currentScore;
-    private float GAP = 200f;
-    private float HEIGHT_PLATFORM = 20f;
-    private float MIN_WIDTH = 150f;
-    private float MAX_WIDTH = 200f;
-    private float POSISI_Y_AWAL = -1500f;
+    private final float GAP = 200f;
+    private final float MIN_WIDTH = 150f;
+    private final float MAX_WIDTH = 200f;
+    private final float POSISI_Y_AWAL = -1500f;
     private int level = 0;
     Grounds groundDiAtasPlayer;
-    private CoinFactory coinFactory;
-    private List<CoinPattern> coinPatterns;
+    private final CoinFactory coinFactory;
+    private final List<CoinPattern> coinPatterns;
     List<Grounds> toRelease;
     List<Coin> coinsToRelease;
-    private BitmapFont fontDash;
     private boolean bisaDash = false;
-
-    private float waktuKeAcuan;
-    private float waktuLavaKePlayer;
 
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
         dashUI = new DashUI();
-        fontDash = new BitmapFont(Gdx.files.internal("arial.fnt"));
+        BitmapFont fontDash = new BitmapFont(Gdx.files.internal("arial.fnt"));
         fontDash.setColor(Color.WHITE);
         toRelease = new ArrayList<>();
         coinsToRelease = new ArrayList<>();
@@ -70,7 +65,6 @@ public class PlayingState implements GameState {
         coinPatterns = new ArrayList<>();
         coinPatterns.add(new LinePattern());
         widthAwal = Gdx.graphics.getWidth();
-        heightAwal = Gdx.graphics.getHeight();
         maxWidth = Gdx.graphics.getWidth();
         maxHeight = Gdx.graphics.getHeight();
         shapeRenderer = new ShapeRenderer();
@@ -88,10 +82,9 @@ public class PlayingState implements GameState {
         lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 3 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
-        float y = GAP;
         float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
         float titikAcuan = random.nextFloat() * (Gdx.graphics.getWidth() - 300f);
-        groundDiAtasPlayer = groundsFactory.groundsPool.obtain(titikAcuan, y, widthAcuan, 1);
+        groundDiAtasPlayer = groundsFactory.groundsPool.obtain(titikAcuan, GAP, widthAcuan, 1);
         createGrounds(groundsFactory.getInUse());
         scoreUIObserver = new ScoreUIObserver();
         gameManager = GameManager.getInstance();
@@ -210,11 +203,11 @@ public class PlayingState implements GameState {
     public boolean hitungWaktu() {
         float jarakXPlayerKeAcuan = Math.abs(groundDiAtasPlayer.posisiAcuan - player.getPosition().x);
         float kecepatanPlayer = Player.speed;
-        waktuKeAcuan = jarakXPlayerKeAcuan / kecepatanPlayer;
+        float waktuKeAcuan = jarakXPlayerKeAcuan / kecepatanPlayer;
         float jarakYLavaKePlayer = player.getPosition().y - lava.getPosition().y - lava.getHeight();
         float epsilon = 1e-3f;
         float kecepatanLava = Math.max(lava.getKecepatan(), epsilon);
-        waktuLavaKePlayer = jarakYLavaKePlayer / kecepatanLava;
+        float waktuLavaKePlayer = jarakYLavaKePlayer / kecepatanLava;
         if (waktuKeAcuan > waktuLavaKePlayer) {
             player.setJarakDash(0.8f * jarakXPlayerKeAcuan);
         }
@@ -223,7 +216,6 @@ public class PlayingState implements GameState {
     }
 
     public void hitungLevel() {
-        //System.out.println(level);
         level = (int) player.getGroundSekarang().getPosition().y;
     }
 
@@ -258,13 +250,13 @@ public class PlayingState implements GameState {
 
     public void createGrounds(List<Grounds> groundsInUse) {
         float y = GAP;
+        float HEIGHT_PLATFORM = 20f;
         float maksGap = maxGap(Player.speed, Player.lompatan, Player.gravity, y, HEIGHT_PLATFORM);
-        for (int x = 1; x <= 1; x++) {
+        for (int x = 1; x == 1; x++) {
             int kiriKanan = random.nextInt(2);
             float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
             float titikAcuan;
             Grounds groundTerakhir = groundsInUse.get(groundsInUse.size() - 1);
-            //System.out.println(groundTerakhir.grounds.size());
             float minX = (widthAwal - maxWidth) / 2f + GAP;
             float maxX = (widthAwal + maxWidth) / 2f - GAP;
             float posisiKanan = groundTerakhir.getPosisiAcuan() + groundTerakhir.widthAcuan + maksGap;
@@ -287,8 +279,6 @@ public class PlayingState implements GameState {
             }
 
             titikAcuan = MathUtils.clamp(titikAcuan, minX, maxX);
-            //System.out.println("maks= " + maxX + " x = " + titikAcuan + " y = " + groundTerakhir.posisiY + y);
-            //System.out.println(groundTerakhir.posisiY);
             Grounds grounds = groundsFactory.groundsPool.obtain(titikAcuan, groundTerakhir.posisiY + y, widthAcuan, kiriKanan);
             spawnLineCoin(grounds.grounds);
         }
@@ -300,13 +290,12 @@ public class PlayingState implements GameState {
         }
 
         int indeksKiri = 0, indeksKanan = groundsInUse.size() - 1;
-        int indeksTengah = 0;
+        int indeksTengah;
         while (indeksKiri <= indeksKanan) {
             indeksTengah = (indeksKiri + indeksKanan) / 2;
             Grounds grounds = groundsInUse.get(indeksTengah);
             if (target == grounds.posisiY) {
                 groundDiAtasPlayer = grounds;
-                //System.out.println(groundDiAtasPlayer.posisiY);
                 return;
             } else {
                 if (target < grounds.posisiY) {
@@ -327,8 +316,7 @@ public class PlayingState implements GameState {
             float randX = 0.5f * random.nextFloat() * width;
             float radius = 10f;
             float spacing = 30f;
-            int n = (int) ((width - randX + spacing) / (2 * radius + spacing));
-            //System.out.println("width = " + width + " x = " + x + " randX = " + randX + " n = " + n);
+            int n = (int) ((width - randX + spacing - 2*radius) / spacing);
             int r = random.nextInt(10);
             if (r < 2) {
                 spawnCoins(radius + x + randX, y + height + radius + 15f, n);
@@ -365,10 +353,9 @@ public class PlayingState implements GameState {
         camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
         camera.update();
 
-        float y = GAP;
         float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
         float titikAcuan = random.nextFloat() * (Gdx.graphics.getWidth() - 300f);
-        groundDiAtasPlayer = groundsFactory.groundsPool.obtain(titikAcuan, y, widthAcuan, 1);
+        groundDiAtasPlayer = groundsFactory.groundsPool.obtain(titikAcuan, GAP, widthAcuan, 1);
         createGrounds(groundsFactory.getInUse());
     }
 

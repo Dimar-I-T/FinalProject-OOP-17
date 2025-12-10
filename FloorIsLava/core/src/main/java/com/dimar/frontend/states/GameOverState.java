@@ -12,8 +12,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class GameOverState implements GameState {
     private final GameStateManager gsm;
     private final BitmapFont font, font1;
-    private OrthographicCamera camera;
-    private float width, widthAwal, height, heightAwal;
+    private final OrthographicCamera camera;
+    private float width;
+    private final float widthAwal;
+    private float height;
+    private final float heightAwal;
 
     public GameOverState(GameStateManager gsm) {
         System.out.println("You are dead.");

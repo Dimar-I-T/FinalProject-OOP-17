@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.dimar.frontend.Player;
 
 public class DashKananCommand implements Command{
-    private Player player;
+    private final Player player;
     public DashKananCommand(Player player) {
         this.player = player;
     }

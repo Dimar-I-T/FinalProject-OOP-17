@@ -5,13 +5,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Coin {
-    private Vector2 position;
-    private Rectangle collider;
-    private float radius = 10f;
+    private final Vector2 position;
+    private final Rectangle collider;
+    private final float radius = 10f;
     private boolean active;
 
     private float bobOffset;
-    private float bobSpeed = 10f;
 
     public Coin(Vector2 startPosition) {
         position = startPosition;
@@ -19,6 +18,7 @@ public class Coin {
     }
 
     public void update(float delta) {
+        float bobSpeed = 10f;
         bobOffset += bobSpeed * delta;
         float drawY = position.y + (float)(Math.sin(bobOffset) * 5f);
         collider.setPosition(position.x - radius, drawY - radius);

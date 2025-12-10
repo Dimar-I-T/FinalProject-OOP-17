@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.dimar.frontend.states.GameStateManager;
 
 public class ResumeCommand implements Command {
-    private GameStateManager gsm;
+    private final GameStateManager gsm;
 
     public ResumeCommand(GameStateManager gsm) {
         this.gsm = gsm;

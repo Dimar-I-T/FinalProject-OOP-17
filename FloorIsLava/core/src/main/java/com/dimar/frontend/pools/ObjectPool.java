@@ -3,8 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ObjectPool<T> {
-    private List<T> available = new ArrayList<>();
-    private List<T> inUse = new ArrayList<>();
+    private final List<T> available = new ArrayList<>();
+    private final List<T> inUse = new ArrayList<>();
 
     protected abstract T createObject();
     protected abstract void resetObject(T object);

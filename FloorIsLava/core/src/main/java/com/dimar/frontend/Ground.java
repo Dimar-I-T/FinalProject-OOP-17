@@ -5,10 +5,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Ground {
-    private float width;
-    private float height;
-    private Vector2 position;
-    private Rectangle collider;
+    private final float width;
+    private final float height;
+    private final Vector2 position;
+    private final Rectangle collider;
     private boolean acuan = false;
     private boolean active;
 

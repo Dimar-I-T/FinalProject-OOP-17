@@ -5,13 +5,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Lava {
-    private float width;
-    private float height;
-    private Vector2 position;
-    private Vector2 velocity;
-    private Rectangle collider;
+    private final float width;
+    private final float height;
+    private final Vector2 position;
+    private final Vector2 velocity;
+    private final Rectangle collider;
     private boolean active;
-    private float kecepatan = 220f;
+    private final float kecepatan = 220f;
 
     public Lava(Vector2 startPosition, float width, float height) {
         velocity = new Vector2(0, kecepatan);

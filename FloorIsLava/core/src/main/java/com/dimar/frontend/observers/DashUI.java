@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DashUI {
-    private BitmapFont font, font1;
-    private SpriteBatch batch;
+    private final BitmapFont font;
+    private final SpriteBatch batch;
     private float width = Gdx.graphics.getWidth(), height = Gdx.graphics.getHeight();
     private float widthAwal = Gdx.graphics.getWidth(), heightAwal = Gdx.graphics.getHeight();
     public DashUI() {

@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ScoreUIObserver implements Observer {
-    private BitmapFont font, font1;
-    private SpriteBatch batch;
+    private final BitmapFont font;
+    private final BitmapFont font1;
+    private final SpriteBatch batch;
     private int score;
     private float width = Gdx.graphics.getWidth(), height = Gdx.graphics.getHeight();
-    private float widthAwal = Gdx.graphics.getWidth(), heightAwal = Gdx.graphics.getHeight();
+    private final float widthAwal = Gdx.graphics.getWidth();
+    private final float heightAwal = Gdx.graphics.getHeight();
     public ScoreUIObserver() {
         font = new BitmapFont(Gdx.files.internal("arial.fnt"));
         font.setColor(Color.WHITE);

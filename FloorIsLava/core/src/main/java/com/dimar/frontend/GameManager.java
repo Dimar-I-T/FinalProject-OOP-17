@@ -5,7 +5,7 @@ import com.dimar.frontend.observers.ScoreManager;
 
 public class GameManager {
     private static GameManager instance;
-    private ScoreManager scoreManager;
+    private final ScoreManager scoreManager;
     private boolean gameActive;
     int coinsCollected = 0;
 
