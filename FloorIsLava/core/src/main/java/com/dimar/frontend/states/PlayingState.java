@@ -84,7 +84,8 @@ public class PlayingState implements GameState {
         lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 3 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
-        float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
+        float HEIGHT_PLATFORM = 20f;
+        float widthAcuan = MIN_WIDTH + random.nextInt((int)((MAX_WIDTH - MIN_WIDTH) / HEIGHT_PLATFORM) + 1) * HEIGHT_PLATFORM;
         float titikAcuan = random.nextFloat() * (Gdx.graphics.getWidth() - 300f);
         groundDiAtasPlayer = groundsFactory.groundsPool.obtain(titikAcuan, GAP, widthAcuan, 1);
         createGrounds(groundsFactory.getInUse());

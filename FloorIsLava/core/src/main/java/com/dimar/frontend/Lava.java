@@ -11,7 +11,7 @@ public class Lava {
     private final Vector2 velocity;
     private final Rectangle collider;
     private boolean active;
-    private final float kecepatan = 1f;
+    private final float kecepatan = 220f;
 
     public Lava(Vector2 startPosition, float width, float height) {
         velocity = new Vector2(0, kecepatan);
