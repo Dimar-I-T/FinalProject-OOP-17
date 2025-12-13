@@ -119,10 +119,13 @@ public class PlayingState implements GameState {
             coin.renderShape(shapeRenderer);
         }
 
-
         player.render(shapeRenderer);
         ground.render(shapeRenderer);
-        lava.render(shapeRenderer);
+
+        spriteBatch.begin();
+        lava.renderTexture(spriteBatch);
+        spriteBatch.end();
+//        lava.render(shapeRenderer);
         shapeRenderer.end();
         scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected());
         if (bisaDash) {
