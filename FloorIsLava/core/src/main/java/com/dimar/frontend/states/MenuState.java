@@ -2,6 +2,7 @@ package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -110,7 +111,7 @@ public class MenuState implements GameState {
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
         batch.begin();
-        background.render(batch);
+        background.render(batch, new OrthographicCamera());
         batch.end();
         stage.draw();
     }

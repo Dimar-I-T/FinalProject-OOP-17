@@ -81,7 +81,7 @@ public class PlayingState implements GameState {
         dashCommand.add(new DashKiriCommand(player));
         dashCommand.add(new DashKananCommand(player));
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
-        lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 3 * Gdx.graphics.getWidth(), 1000f);
+        lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
         float HEIGHT_PLATFORM = 20f;
@@ -99,11 +99,14 @@ public class PlayingState implements GameState {
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch spriteBatch) {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        background.render(spriteBatch);
+        spriteBatch.disableBlending();
+        background.render(spriteBatch, camera);
+        lava.renderTexture(spriteBatch);
+        spriteBatch.enableBlending();
         for (Grounds grounds1 : groundsFactory.getInUse()) {
             grounds1.render(spriteBatch);
         }
@@ -122,9 +125,7 @@ public class PlayingState implements GameState {
         player.render(shapeRenderer);
         ground.render(shapeRenderer);
 
-        spriteBatch.begin();
-        lava.renderTexture(spriteBatch);
-        spriteBatch.end();
+
 //        lava.render(shapeRenderer);
         shapeRenderer.end();
         scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected());
