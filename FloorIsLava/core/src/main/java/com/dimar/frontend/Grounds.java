@@ -53,7 +53,7 @@ public class Grounds {
         float maxWidth = 200f;
         if (kiriKanan == 1) {
             while (x < screenWidth) {
-                float width = widthMin + random.nextFloat() * (maxWidth - widthMin);
+                float width = widthMin + random.nextInt((int)((maxWidth - widthMin) / height) + 1) * height;
                 Ground ground = new Ground(new Vector2(x, posisiY), width, height, false);
                 grounds.add(ground);
                 gap = gapMin + random.nextFloat() * (maxGap - gapMin);
@@ -66,7 +66,7 @@ public class Grounds {
             gap = tambahKiri + gapMin + random.nextFloat() * (maxGap - gapMin);
             x = groundAcuan.getPosition().x - gap;
             while (x > 0) {
-                float width = widthMin + random.nextFloat() * (maxWidth - widthMin);
+                float width = widthMin + random.nextInt((int)((maxWidth - widthMin) / height) + 1) * height;
                 Ground ground = new Ground(new Vector2(x - width, posisiY), width, height, false);
                 grounds.add(ground);
                 gap = gapMin + random.nextFloat() * (maxGap - gapMin);
@@ -83,19 +83,19 @@ public class Grounds {
 
     public void render(SpriteBatch batch){
         // MASIH BELOM BENER
-        batch.begin();
         for (Ground g: grounds){
             float scaledWidth = g.getHeight();
-            float startX = g.getPosition().x - g.getWidth() / 2f;
+
+            float startX = g.getPosition().x;
             float boundX = startX + g.getWidth();
 
-            batch.draw(edgeKiri, startX + scaledWidth / 2f, g.getPosition().y, scaledWidth, g.getHeight());
-            for (float x = startX + scaledWidth; x < boundX; x += scaledWidth){
+            batch.draw(edgeKiri, startX, g.getPosition().y, scaledWidth, g.getHeight());
+            for (float x = startX + scaledWidth; x < boundX - scaledWidth; x += scaledWidth){
                 batch.draw(middle, x, g.getPosition().y, scaledWidth, g.getHeight());
             }
-            batch.draw(edgeKanan, boundX - scaledWidth / 2f, g.getPosition().y, scaledWidth, g.getHeight());
+
+            batch.draw(edgeKanan, boundX - scaledWidth, g.getPosition().y, scaledWidth, g.getHeight());
         }
-        batch.end();
     }
 
     public float getPosisiAcuan() {

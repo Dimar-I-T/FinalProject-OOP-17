@@ -43,7 +43,7 @@ public class PlayingState implements GameState {
     private int lastLoggedScore = -1;
     float currentScore;
     private final float GAP = 200f;
-    private final float MIN_WIDTH = 150f;
+    private final float MIN_WIDTH = 100f;
     private final float MAX_WIDTH = 200f;
     private final float POSISI_Y_AWAL = -1500f;
     private int level = 0;
@@ -100,17 +100,25 @@ public class PlayingState implements GameState {
     public void render(ShapeRenderer shapeRenderer, SpriteBatch spriteBatch) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        background.render(spriteBatch);
+        for (Grounds grounds1 : groundsFactory.getInUse()) {
+            grounds1.render(spriteBatch);
+        }
+
+        spriteBatch.end();
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Grounds grounds1 : groundsFactory.getInUse()) {
-            grounds1.renderShape(shapeRenderer);
-        }
+//        for (Grounds grounds1 : groundsFactory.getInUse()) {
+//            grounds1.renderShape(shapeRenderer);
+//        }
 
         for (Coin coin : coinFactory.getInUse()) {
             coin.renderShape(shapeRenderer);
         }
 
-        background.render(spriteBatch);
+
         player.render(shapeRenderer);
         ground.render(shapeRenderer);
         lava.render(shapeRenderer);
@@ -135,7 +143,7 @@ public class PlayingState implements GameState {
         camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
         camera.update();
 
-        background.update(camera.position.x);
+        background.update(camera.position.y);
         player.update(delta);
         toRelease.clear();
         coinsToRelease.clear();
@@ -261,7 +269,7 @@ public class PlayingState implements GameState {
         float maksGap = maxGap(Player.speed, Player.lompatan, Player.gravity, y, HEIGHT_PLATFORM);
         for (int x = 1; x == 1; x++) {
             int kiriKanan = random.nextInt(2);
-            float widthAcuan = MIN_WIDTH + random.nextFloat() * (MAX_WIDTH - MIN_WIDTH);
+            float widthAcuan = MIN_WIDTH + random.nextInt((int)((MAX_WIDTH - MIN_WIDTH) / HEIGHT_PLATFORM) + 1) * HEIGHT_PLATFORM;
             float titikAcuan;
             Grounds groundTerakhir = groundsInUse.get(groundsInUse.size() - 1);
             float minX = (widthAwal - maxWidth) / 2f + GAP;
