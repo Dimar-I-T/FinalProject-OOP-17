@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.Background;
+import com.dimar.frontend.GameManager;
 
 public class MenuState implements GameState {
     private Background background;
@@ -74,6 +75,11 @@ public class MenuState implements GameState {
         textButtonStyle.down = skin.newDrawable("white");
         textButtonStyle.over = skin.newDrawable("dark_gray");
         skin.add("textButtonStyle", textButtonStyle);
+
+        Label.LabelStyle defaultStyle = new Label.LabelStyle();
+        defaultStyle.font = bitmapFont;
+        defaultStyle.fontColor = Color.WHITE;
+        skin.add("default", defaultStyle);
     }
 
     private void buildUI() {
@@ -83,6 +89,31 @@ public class MenuState implements GameState {
 
         Label judul = new Label("FLOOR IS LAVA", skin, "labelStyle");
         judul.setFontScale(2f);
+        table.add(judul).padBottom(20f);
+        table.row();
+
+        Label playerLabel = new Label("Hello, guest", skin, "default");
+        table.add(playerLabel).padBottom(20f);
+        table.row();
+
+        Label skorLabel = new Label("High Score: ", skin, "default");
+        table.add(skorLabel).padBottom(20f);
+        table.row();
+
+        Label coinsCollectedLabel = new Label("Coins Collected: ", skin, "default");
+        table.add(coinsCollectedLabel).padBottom(40f);
+        table.row();
+
+        GameManager.getInstance().fetchUsername(new GameManager.UsernameCallback() {
+            @Override
+            public void onFetched(String fetchedUsername, int skor, int coinsCollected) {
+                Gdx.app.postRunnable(() -> {
+                    playerLabel.setText("Hello, " + fetchedUsername);
+                    skorLabel.setText("High Score: " + skor);
+                    coinsCollectedLabel.setText("Coins Collected: " + coinsCollected);
+                });
+            }
+        });
 
         TextButton textButton = new TextButton("START GAME", skin, "textButtonStyle");
         textButton.addListener(new ClickListener() {
@@ -92,10 +123,17 @@ public class MenuState implements GameState {
             }
         });
 
-        table.add(judul).padBottom(20f);
-        table.row();
+        TextButton textButtonLogin = new TextButton("Login", skin, "textButtonStyle");
+        textButtonLogin.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new LoginState(gsm));
+            }
+        });
 
-        table.add(textButton).width(200f).height(50f);
+        table.add(textButton).padBottom(30f).width(200f).height(50f);
+        table.row();
+        table.add(textButtonLogin).padBottom(100f).width(200f).height(50f);
     }
 
     @Override

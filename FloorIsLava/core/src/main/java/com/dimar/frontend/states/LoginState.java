@@ -2,6 +2,7 @@ package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,25 +13,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.dimar.frontend.Background;
 import com.dimar.frontend.GameManager;
-import com.dimar.frontend.commands.Command;
-import com.dimar.frontend.commands.ResumeCommand;
+import com.dimar.frontend.services.BackendService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PauseState implements GameState {
-    private GameStateManager gsm;
-    private Stage stage;
+public class LoginState implements GameState{
+    private Background background;
+    private final GameStateManager gsm;
+    private final Stage stage;
     private Skin skin;
-    private PlayingState playingState;
-    private List<Command> commands;
+    private TextField nameField, passwordField;
+    private Label errorLabel;
 
-    public PauseState(GameStateManager gsm, PlayingState playingState) {
-        this.playingState = playingState;
+    public LoginState(GameStateManager gsm) {
+        background = new Background();
         this.gsm = gsm;
-        commands = new ArrayList<>();
-        commands.add(new ResumeCommand(gsm));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         createBasicSkin();
@@ -81,6 +78,16 @@ public class PauseState implements GameState {
         textButtonStyle.down = skin.newDrawable("white");
         textButtonStyle.over = skin.newDrawable("dark_gray");
         skin.add("textButtonStyle", textButtonStyle);
+
+        Label.LabelStyle defaultStyle = new Label.LabelStyle();
+        defaultStyle.font = bitmapFont;
+        defaultStyle.fontColor = Color.WHITE;
+        skin.add("default", defaultStyle);
+
+        Label.LabelStyle errorStyle = new Label.LabelStyle();
+        errorStyle.font = bitmapFont;
+        errorStyle.fontColor = Color.RED;
+        skin.add("error", errorStyle);
     }
 
     private void buildUI() {
@@ -88,14 +95,46 @@ public class PauseState implements GameState {
         table.setFillParent(true);
         stage.addActor(table);
 
-        Label judul = new Label("Game is paused", skin, "labelStyle");
+        Label judul = new Label("Login", skin, "labelStyle");
         judul.setFontScale(2f);
 
-        TextButton textButton = new TextButton("RESUME", skin, "textButtonStyle");
+        Label promptUsername = new Label("Enter Your Username:", skin, "labelStyle");
+        nameField = new TextField("", skin, "textFieldStyle");
+
+        Label promptPassword = new Label("Enter Your Password:", skin, "labelStyle");
+        passwordField = new TextField("", skin, "textFieldStyle");
+
+        errorLabel = new Label("", skin, "error");
+        errorLabel.setVisible(false);
+
+        TextButton textButton = new TextButton("LOGIN", skin, "textButtonStyle");
         textButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gsm.pop();
+                String username = nameField.getText();
+                String password = passwordField.getText();
+
+                if (username.trim().isEmpty() || password.trim().isEmpty()) {
+                    errorLabel.setText("Username or password can't be empty");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+
+                GameManager.getInstance().loginPlayer(username, password, new GameManager.LoginCallback() {
+                    @Override
+                    public void onSuccess(String token) {
+                        Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm)));
+                        errorLabel.setVisible(false);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Gdx.app.postRunnable(() -> {
+                            errorLabel.setText("Username or Password is incorrect");
+                            errorLabel.setVisible(true);
+                        });
+                    }
+                });
             }
         });
 
@@ -103,19 +142,44 @@ public class PauseState implements GameState {
         textButtonBack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameManager.getInstance().endGame();
                 gsm.set(new MenuState(gsm));
+            }
+        });
+
+        TextButton textButtonRegister = new TextButton("CREATE ACCOUNT", skin, "textButtonStyle");
+        textButtonRegister.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new RegisterState(gsm));
             }
         });
 
         table.add(judul).padBottom(20f);
         table.row();
 
-        table.add(textButton).padBottom(20f).width(200f).height(50f);
+        table.add(promptUsername).padBottom(10f);
         table.row();
 
-        table.add(textButtonBack).padBottom(20f).width(200f).height(50f);
+        table.add(nameField).width(250f).height(40f).padBottom(20f);
         table.row();
+
+        table.add(promptPassword).padBottom(10f);
+        table.row();
+
+        table.add(passwordField).width(250f).height(40f).padBottom(20f);
+        table.row();
+
+        table.add(errorLabel).padBottom(20f);
+        table.row();
+
+        table.add(textButton).padBottom(30f).width(200f).height(50f);
+        table.row();
+        table.add(textButtonBack).padBottom(30f).width(200f).height(50f);
+        table.row();
+        Label haveNoAcc = new Label("Don't have an account?", skin, "default");
+        table.add(haveNoAcc).padBottom(20f);
+        table.row();
+        table.add(textButtonRegister).padBottom(30f).width(200f).height(50f);
     }
 
     @Override
@@ -125,16 +189,14 @@ public class PauseState implements GameState {
 
     @Override
     public void update(float delta) {
-        for (Command command : commands) {
-            command.execute();
-        }
-
         stage.act(delta);
     }
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
-        playingState.render(shapeRenderer, new SpriteBatch());
+        batch.begin();
+        background.render(batch, new OrthographicCamera());
+        batch.end();
         stage.draw();
     }
 

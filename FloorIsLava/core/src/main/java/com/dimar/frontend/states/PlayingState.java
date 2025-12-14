@@ -136,6 +136,7 @@ public class PlayingState implements GameState {
 
     public void update(float delta) {
         if (player.getIsDead()) {
+            gameManager.endGame();
             reset();
             gsm.set(new GameOverState(gsm));
             return;

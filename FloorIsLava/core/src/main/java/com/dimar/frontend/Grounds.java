@@ -49,7 +49,7 @@ public class Grounds {
         float gapMin = 120f;
         float gap = tambahKanan + gapMin + random.nextFloat() * (maxGap - gapMin);
         float x = groundAcuan.getPosition().x + widthAcuan + gap;
-        float widthMin = 100f;
+        float widthMin = 120f;
         float maxWidth = 200f;
         if (kiriKanan == 1) {
             while (x < screenWidth) {
