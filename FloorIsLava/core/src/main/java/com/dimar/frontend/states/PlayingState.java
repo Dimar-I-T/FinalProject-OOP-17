@@ -107,6 +107,7 @@ public class PlayingState implements GameState {
         background.render(spriteBatch, camera);
         lava.renderTexture(spriteBatch);
         spriteBatch.enableBlending();
+        player.renderTexture(spriteBatch);
         for (Grounds grounds1 : groundsFactory.getInUse()) {
             grounds1.render(spriteBatch);
         }
@@ -122,7 +123,6 @@ public class PlayingState implements GameState {
             coin.renderShape(shapeRenderer);
         }
 
-        player.render(shapeRenderer);
         ground.render(shapeRenderer);
 
 
