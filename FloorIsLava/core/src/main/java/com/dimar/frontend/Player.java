@@ -2,9 +2,17 @@ package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.dimar.frontend.states.playerStates.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
     private final Vector2 velocity;
@@ -23,7 +31,15 @@ public class Player {
     private float verticalDistanceTravelled = 0f;
     private final float waktuDash = 0.1f;
     private float jarakDash = 500f;
-    boolean isDashing = false;
+
+    private final PlayerStateManager psm;
+
+    private List<Animation<TextureRegion>> animations;
+    private TextureRegion currentFrame;
+    private float stateTime;
+    private Arah arah;
+
+
     float dashTimeLeft = 0f;
     float kecepatanDash;
 
@@ -37,6 +53,126 @@ public class Player {
         this.startPosition = new Vector2(startPosition.x, startPosition.y);
         velocity = new Vector2(0, 0);
         collider = new Rectangle(startPosition.x, startPosition.y, WIDTH, HEIGHT);
+        psm = new PlayerStateManager();
+        arah = psm.getCurrentState().getArah();
+        animations = new ArrayList<>();
+
+        initializeAnimation();
+    }
+
+    private void initializeAnimation(){
+        TextureRegion[] idleTextureKanan = new TextureRegion[7];
+        TextureRegion[] idleTextureKiri = new TextureRegion[7];
+        TextureRegion[] runTextureKanan = new TextureRegion[8];
+        TextureRegion[] runTextureKiri = new TextureRegion[8];
+        TextureRegion[] jumpTextureKanan = new TextureRegion[3];
+        TextureRegion[] jumpTextureKiri = new TextureRegion[3];
+        TextureRegion[] fallTextureKanan = new TextureRegion[2];
+        TextureRegion[] fallTextureKiri = new TextureRegion[2];
+
+
+        for (int i = 0; i < 7; i++){
+            String internalPath = "player/IDLE/KANAN/IDLE" + (i + 1) + ".png";
+            idleTextureKanan[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(0, new Animation<>(1f/12f, idleTextureKanan));
+        animations.get(0).setPlayMode(Animation.PlayMode.LOOP);
+
+        for (int i = 0; i < 7; i++){
+            String internalPath = "player/IDLE/KIRI/IDLE" + (i + 1) + ".png";
+            idleTextureKiri[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(1, new Animation<>(1f/12f, idleTextureKanan));
+        animations.get(1).setPlayMode(Animation.PlayMode.LOOP);
+
+        for (int i = 0; i < 8; i++){
+            String internalPath = "player/RUN/KANAN/RUN" + (i + 1) + ".png";
+            runTextureKanan[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(2, new Animation<>(1f/12f, runTextureKanan));
+        animations.get(2).setPlayMode(Animation.PlayMode.LOOP);
+
+        for (int i = 0; i < 8; i++){
+            String internalPath = "player/RUN/KIRI/RUN" + (i + 1) + ".png";
+            runTextureKiri[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(3, new Animation<>(1f/12f, runTextureKiri));
+        animations.get(3).setPlayMode(Animation.PlayMode.LOOP);
+
+        for (int i = 0; i < 3; i++){
+            String internalPath = "player/JUMP/KANAN/JUMP" + (i + 1) + ".png";
+            jumpTextureKanan[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(4, new Animation<>(1f/12f, jumpTextureKanan));
+        animations.get(4).setPlayMode(Animation.PlayMode.NORMAL);
+
+        for (int i = 0; i < 3; i++){
+            String internalPath = "player/JUMP/KIRI/JUMP" + (i + 1) + ".png";
+            jumpTextureKiri[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(5, new Animation<>(1f/12f, jumpTextureKiri));
+        animations.get(5).setPlayMode(Animation.PlayMode.NORMAL);
+
+        for (int i = 0; i < 2; i++){
+            String internalPath = "player/FALL/KANAN/FALL" + (i + 1) + ".png";
+            fallTextureKanan[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(6, new Animation<>(1f/12f, fallTextureKanan));
+        animations.get(6).setPlayMode(Animation.PlayMode.NORMAL);
+
+        for (int i = 0; i < 2; i++){
+            String internalPath = "player/FALL/KIRI/FALL" + (i + 1) + ".png";
+            fallTextureKiri[i] = new TextureRegion(new Texture(internalPath));
+        }
+
+        animations.add(7, new Animation<>(1f/12f, fallTextureKiri));
+        animations.get(7).setPlayMode(Animation.PlayMode.NORMAL);
+
+        currentFrame = idleTextureKanan[0];
+        stateTime = 0f;
+    }
+
+    private void updateAnimation(float delta){
+        stateTime += delta;
+
+        if (psm.getCurrentState() instanceof JumpState) {
+            if(psm.getCurrentState().getArah() == Arah.KIRI) {
+                currentFrame = animations.get(5).getKeyFrame(stateTime, false);
+            }
+            else {
+                currentFrame = animations.get(4).getKeyFrame(stateTime, false);
+            }
+        } else if(psm.getCurrentState() instanceof FallState){
+            if(psm.getCurrentState().getArah() == Arah.KIRI) {
+                currentFrame = animations.get(7).getKeyFrame(stateTime, false);
+            }
+            else {
+                currentFrame = animations.get(6).getKeyFrame(stateTime, false);
+            }
+        } else if (psm.getCurrentState() instanceof DashState) {
+            // Tambahin partikel dash nanti
+        } else if (psm.getCurrentState() instanceof RunningState) {
+            if(psm.getCurrentState().getArah() == Arah.KIRI) {
+                currentFrame = animations.get(3).getKeyFrame(stateTime, true);
+            }
+            else {
+                currentFrame = animations.get(2).getKeyFrame(stateTime, true);
+            }
+        } else {
+            if(psm.getCurrentState().getArah() == Arah.KIRI) {
+                currentFrame = animations.get(1).getKeyFrame(stateTime, true);
+            }
+            else {
+                currentFrame = animations.get(0).getKeyFrame(stateTime, true);
+            }
+        }
     }
 
     public void render(ShapeRenderer shapeRenderer) {
@@ -44,13 +180,19 @@ public class Player {
         shapeRenderer.rect(position.x, position.y, WIDTH, HEIGHT);
     }
 
+    public void renderTexture(SpriteBatch batch){
+        if (currentFrame != null) {
+            batch.draw(currentFrame.getTexture(), position.x, position.y, HEIGHT * HEIGHT / WIDTH, HEIGHT);
+        }
+    }
+
     public void update(float delta) {
-        if (isDashing) {
+        if (psm.getCurrentState() instanceof DashState) {
             position.x += arahDash * kecepatanDash * delta;
             dashTimeLeft -= delta;
 
             if (dashTimeLeft <= 0f) {
-                isDashing = false;
+                psm.idle(arah);
                 arahDash = 0;
             }
         }
@@ -61,9 +203,13 @@ public class Player {
             updateVerticalDistance();
             Delta = delta;
         }
-
         //System.out.println(isDead);
+        if (velocity.y >= 0 && !isColliding)psm.jump(arah); // Masih ada bug
+        else if (velocity.y < 0) psm.fall(arah); // Masih ada bug
+
+        updateAnimation(delta);
         updateCollider();
+        if (velocity.x == 0 && isColliding) psm.idle(arah); // Masih ada bug
     }
 
     private void updateVerticalDistance() {
@@ -78,7 +224,7 @@ public class Player {
             if (velocity.y < -700f) {
                 velocity.y = -700f;
             }
-        }
+        } else velocity.y = 0f;
     }
 
     public void Lompat() {
@@ -89,8 +235,8 @@ public class Player {
     }
 
     public void startDashKiri() {
-        if (!isDashing) {
-            isDashing = true;
+        if (!(psm.getCurrentState() instanceof DashState)) {
+            psm.dash(Arah.KIRI);
             dashTimeLeft = waktuDash;
             kecepatanDash = jarakDash / waktuDash;
             arahDash = -1;
@@ -98,8 +244,8 @@ public class Player {
     }
 
     public void startDashKanan() {
-        if (!isDashing) {
-            isDashing = true;
+        if (!(psm.getCurrentState() instanceof DashState)) {
+            psm.dash(Arah.KANAN);
             dashTimeLeft = waktuDash;
             kecepatanDash = jarakDash / waktuDash;
             arahDash = 1;
@@ -112,10 +258,14 @@ public class Player {
 
     public void Kiri() {
         position.x -= speed * Delta;
+        arah = Arah.KIRI;
+        psm.running(arah);
     }
 
     public void Kanan() {
         position.x += speed * Delta;
+        arah = Arah.KANAN;
+        psm.running(arah);
     }
 
     private void updatePositionY(float delta) {
