@@ -107,44 +107,4 @@ public class PlayerController {
         List<Player> players = playerService.getLeaderboardByTotalDistance();
         return ResponseEntity.ok(players);
     }
-
-    // kesan: MANTAP PISAN, PESAN: soal diperdikit :)
-
-//    public PlayerController(PlayerRepository playerService) {
-//        System.out.println("PlayerController initialized");
-//        this.playerService = playerService;
-//    }
-//
-//    @GetMapping("/{username}")
-//    public Optional<Player> getPlayerByUsername(@PathVariable  String username) {
-//        return playerService.findByUsername(username);
-//    }
-//
-//    @GetMapping("/top")
-//    public List<Player> getTopPlayersByHighScore(@RequestParam(defaultValue = "10") int limit) {
-//        return playerService.findTopPlayersByHighScore(limit);
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<Player> createPlayer(@RequestBody Player playerRequest) {
-//        System.out.println("POST /players called with username: " + playerRequest.getUsername());
-//        Player newPlayer = new Player();
-//        newPlayer.setUsername(playerRequest.getUsername());
-//        Player savedPlayer = playerService.save(newPlayer);
-//        return ResponseEntity.ok(savedPlayer);
-//    }
-//
-//    @PutMapping("/{id}/highscore")
-//    public ResponseEntity<Player> updateHighScore(
-//            @PathVariable UUID id,
-//            @RequestParam int newScore
-//    ) {
-//        return playerService.findById(id)
-//                .map(player -> {
-//                    player.updateHighScore(newScore);
-//                    Player updated = playerService.save(player);
-//                    return ResponseEntity.ok(updated);
-//                })
-//                .orElse(ResponseEntity.notFound().build());
-//    }
 }
