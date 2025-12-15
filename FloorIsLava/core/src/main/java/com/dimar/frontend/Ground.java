@@ -1,6 +1,9 @@
 package com.dimar.frontend;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -37,6 +40,19 @@ public class Ground {
         shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
     }
 
+    public void renderTexture(SpriteBatch batch, ShapeRenderer renderer){
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.BROWN);
+        renderer.rect(position.x, position.y, width,height);
+        renderer.end();
+
+        batch.begin();
+        for (float x = 0; x < Gdx.graphics.getWidth(); x += 1920f / 2f){
+            batch.draw(texture, x, height + position.y - 15f, 1920f / 2f, 1080f / 2f);
+        }
+        batch.end();
+    }
+
     public float getHeight() {
         return height;
     }
@@ -55,5 +71,9 @@ public class Ground {
 
     public void setTexture(Texture texture) {
         this.texture = texture;
+    }
+
+    public void dispose(){
+        if(texture != null) texture.dispose();
     }
 }

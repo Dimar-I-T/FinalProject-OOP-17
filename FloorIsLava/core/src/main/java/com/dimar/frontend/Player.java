@@ -22,8 +22,8 @@ public class Player {
     public static float speed = 350f;
     public static float lompatan = 1000f;
     public static float gravity = 2000f;
-    private final float WIDTH = 64f;
-    private final float HEIGHT = 64f;
+    private float WIDTH = 64f;
+    private float HEIGHT = 64f;
     private float Delta;
     private boolean isColliding = false;
     private final float widthAwal;
@@ -84,7 +84,7 @@ public class Player {
             idleTextureKiri[i] = new TextureRegion(new Texture(internalPath));
         }
 
-        animations.add(1, new Animation<>(1f/12f, idleTextureKanan));
+        animations.add(1, new Animation<>(1f/12f, idleTextureKiri));
         animations.get(1).setPlayMode(Animation.PlayMode.LOOP);
 
         for (int i = 0; i < 8; i++){
@@ -139,9 +139,13 @@ public class Player {
         stateTime = 0f;
     }
 
+    public void setSize(float size){
+        this.WIDTH = size;
+        this.HEIGHT = size;
+    }
+
     private void updateAnimation(float delta){
         stateTime += delta;
-
         if (psm.getCurrentState() instanceof JumpState) {
             if(psm.getCurrentState().getArah() == Arah.KIRI) {
                 currentFrame = animations.get(5).getKeyFrame(stateTime, false);
@@ -182,7 +186,7 @@ public class Player {
 
     public void renderTexture(SpriteBatch batch){
         if (currentFrame != null) {
-            batch.draw(currentFrame.getTexture(), position.x, position.y, HEIGHT * HEIGHT / WIDTH, HEIGHT);
+            batch.draw(currentFrame.getTexture(), position.x, position.y, HEIGHT * HEIGHT / WIDTH + 10f, HEIGHT + 10f);
         }
     }
 
