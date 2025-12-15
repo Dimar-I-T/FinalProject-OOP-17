@@ -15,15 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.Background;
 import com.dimar.frontend.GameManager;
+import com.dimar.frontend.MenuBackground;
 
 public class MenuState implements GameState {
-    private Background background;
+    private MenuBackground background;
     private final GameStateManager gsm;
     private final Stage stage;
     private Skin skin;
 
     public MenuState(GameStateManager gsm) {
-        background = new Background();
+        background = new MenuBackground();
         this.gsm = gsm;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -143,19 +144,19 @@ public class MenuState implements GameState {
 
     @Override
     public void update(float delta) {
+        background.update(delta);
         stage.act(delta);
     }
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
-        batch.begin();
-        background.render(batch, new OrthographicCamera());
-        batch.end();
+        background.render(batch, shapeRenderer);
         stage.draw();
     }
 
     @Override
     public void dispose() {
+        background.dispose();
         stage.dispose();
         skin.dispose();
     }
