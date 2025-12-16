@@ -130,8 +130,13 @@ public class RegisterState implements GameState {
                     public void onError(String error) {
                         Gdx.app.postRunnable(() -> {
                             System.out.println("Register gagal: " + error);
-                            errorLabel.setText("Username already exists");
-                            errorLabel.setVisible(true);
+                            if (error.toLowerCase().contains("timeout") || error.toLowerCase().contains("timed out")) {
+                                errorLabel.setText("Server is waking up, please try again.");
+                                errorLabel.setVisible(true);
+                            }else{
+                                errorLabel.setText("Username already exists");
+                                errorLabel.setVisible(true);
+                            }
                         });
                     }
                 });

@@ -1,5 +1,6 @@
 package com.dimar.frontend.services;
 
+import com.badlogic.gdx.Gdx;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -70,6 +71,24 @@ public class BackendService {
             .build();
 
         send(request, callback);
+    }
+
+    public void pingBackend() {
+        Request request = new Request.Builder()
+            .url(BASE_URL + "/api/info")
+            .get()
+            .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                response.close();
+            }
+        });
     }
 
     private void send(Request request, RequestCallback callback) {

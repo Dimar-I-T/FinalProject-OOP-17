@@ -22,6 +22,7 @@ public class GameManager {
     private GameManager() {
         scoreManager = new ScoreManager();
         backendService = new BackendService();
+        backendService.pingBackend();
         scoreManager.setScore(0);
         gameActive = false;
     }
