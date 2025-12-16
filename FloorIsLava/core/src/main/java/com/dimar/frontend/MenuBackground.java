@@ -1,6 +1,7 @@
 package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,6 +19,7 @@ public class MenuBackground {
     private float height;
     private Player player;
     private Ground ground;
+    private OrthographicCamera camera;
 
     public MenuBackground() {
         backgroundTexture = new Texture(Gdx.files.internal("menu/SKY/1.png"));
@@ -26,6 +28,9 @@ public class MenuBackground {
 
         this.width = Gdx.graphics.getWidth();
         this.height = Gdx.graphics.getHeight();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, width, height);
+        camera.update();
 
         ground = new Ground(new Vector2(0,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
         ground.setTexture(new Texture("menu/GROUND/Grass.png"));
@@ -49,6 +54,8 @@ public class MenuBackground {
     }
 
     public void render(SpriteBatch batch, ShapeRenderer renderer){
+        batch.setProjectionMatrix(camera.combined);
+        renderer.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(backgroundRegion, 0f, 0f, width, height);
         for (Clouds c: clouds){
