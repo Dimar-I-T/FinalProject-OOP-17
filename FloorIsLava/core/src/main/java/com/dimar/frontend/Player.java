@@ -31,6 +31,7 @@ public class Player {
     private float verticalDistanceTravelled = 0f;
     private final float waktuDash = 0.1f;
     private float jarakDash = 500f;
+    boolean isDashing = false;
 
     private final PlayerStateManager psm;
 
@@ -191,12 +192,12 @@ public class Player {
     }
 
     public void update(float delta) {
-        if (psm.getCurrentState() instanceof DashState) {
+        if (isDashing) {
             position.x += arahDash * kecepatanDash * delta;
             dashTimeLeft -= delta;
 
             if (dashTimeLeft <= 0f) {
-                psm.idle(arah);
+                isDashing = false;
                 arahDash = 0;
             }
         }
@@ -239,7 +240,8 @@ public class Player {
     }
 
     public void startDashKiri() {
-        if (!(psm.getCurrentState() instanceof DashState)) {
+        if (!isDashing) {
+            isDashing = true;
             psm.dash(Arah.KIRI);
             dashTimeLeft = waktuDash;
             kecepatanDash = jarakDash / waktuDash;
@@ -248,7 +250,8 @@ public class Player {
     }
 
     public void startDashKanan() {
-        if (!(psm.getCurrentState() instanceof DashState)) {
+        if (!isDashing) {
+            isDashing = true;
             psm.dash(Arah.KANAN);
             dashTimeLeft = waktuDash;
             kecepatanDash = jarakDash / waktuDash;
