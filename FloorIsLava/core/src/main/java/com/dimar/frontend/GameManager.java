@@ -101,13 +101,6 @@ public class GameManager {
                         String username = item.getString("username", "guest");
                         int score = item.getInt("highScore", 0);
                         int coins = item.getInt("totalCoins", 0);
-
-                        Gdx.app.log("LEADERBOARD",
-                            "User: " + username +
-                                " | Score: " + score +
-                                " | Coins: " + coins
-                        );
-
                         leaderboardList.add(new Leaderboard(username, score, coins));
                     }
                 } catch (Exception e) {

@@ -16,8 +16,7 @@ import com.dimar.frontend.factories.CoinFactory;
 import com.dimar.frontend.factories.GroundsFactory;
 import com.dimar.frontend.observers.DashUI;
 import com.dimar.frontend.observers.ScoreUIObserver;
-import com.dimar.frontend.strategies.CoinPattern;
-import com.dimar.frontend.strategies.LinePattern;
+import com.dimar.frontend.strategies.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,9 +42,13 @@ public class PlayingState implements GameState {
     private int lastLoggedScore = -1;
     float currentScore;
     private final float GAP = 200f;
-    private final float MIN_WIDTH = 100f;
+    private final float MIN_WIDTH = 160f;
     private final float MAX_WIDTH = 200f;
     private final float POSISI_Y_AWAL = -1500f;
+    private float jarakPlayerLava = 0f;
+    private float batasNaikDifficulty = 0f;
+    private boolean menungguUpdateBatas = false;
+    private float timerBatas = 0f;
     private int level = 0;
     Grounds groundDiAtasPlayer;
     private final CoinFactory coinFactory;
@@ -53,6 +56,7 @@ public class PlayingState implements GameState {
     List<Grounds> toRelease;
     List<Coin> coinsToRelease;
     private boolean bisaDash = false;
+    private DifficultyStrategy difficultyStrategy;
 
     private Background background;
 
@@ -80,9 +84,11 @@ public class PlayingState implements GameState {
         dashCommand = new ArrayList<>();
         dashCommand.add(new DashKiriCommand(player));
         dashCommand.add(new DashKananCommand(player));
+        lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
+        setDifficulty(new EasyDifficulty());
+        batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
         player.setGroundSekarang(ground);
-        lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
         float HEIGHT_PLATFORM = 20f;
@@ -129,7 +135,7 @@ public class PlayingState implements GameState {
 
 //        lava.render(shapeRenderer);
         shapeRenderer.end();
-        scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected());
+        scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected(), difficultyStrategy.getMode());
         if (bisaDash) {
             dashUI.render();
         }
@@ -220,6 +226,23 @@ public class PlayingState implements GameState {
         }
 
         player.checkBoundaries(maxWidth);
+        setJarak(delta);
+    }
+
+    public void setJarak(float delta) {
+        if (jarakPlayerLava > batasNaikDifficulty && !menungguUpdateBatas) {
+            setDifficulty(difficultyStrategy.getNextDifficulty());
+            menungguUpdateBatas = true;
+            timerBatas = 0f;
+        }
+
+        if (menungguUpdateBatas) {
+            timerBatas += delta;
+            if (timerBatas >= 60f) {
+                batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
+                menungguUpdateBatas = false;
+            }
+        }
     }
 
     public boolean hitungWaktu() {
@@ -227,6 +250,7 @@ public class PlayingState implements GameState {
         float kecepatanPlayer = Player.speed;
         float waktuKeAcuan = jarakXPlayerKeAcuan / kecepatanPlayer;
         float jarakYLavaKePlayer = player.getPosition().y - lava.getPosition().y - lava.getHeight();
+        jarakPlayerLava = jarakYLavaKePlayer;
         float epsilon = 1e-3f;
         float kecepatanLava = Math.max(lava.getKecepatan(), epsilon);
         float waktuLavaKePlayer = jarakYLavaKePlayer / kecepatanLava;
@@ -235,6 +259,11 @@ public class PlayingState implements GameState {
         }
 
         return waktuKeAcuan > waktuLavaKePlayer;
+    }
+
+    public void setDifficulty(DifficultyStrategy difficultyStrategy) {
+        this.difficultyStrategy = difficultyStrategy;
+        lava.setKecepatan(difficultyStrategy.getKecepatanLava());
     }
 
     public void hitungLevel() {
@@ -368,6 +397,7 @@ public class PlayingState implements GameState {
         currentScore = 0f;
         gameManager.setScore(0);
         gameManager.setCoinsCollected(0);
+        setDifficulty(new EasyDifficulty());
 
         groundsFactory.releaseAll();
         coinFactory.releaseAll();

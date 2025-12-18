@@ -15,7 +15,7 @@ public class Lava {
 
     private Texture asset;
     private boolean active;
-    private final float kecepatan = 220f;
+    private float kecepatan;
 
     public Lava(Vector2 startPosition, float width, float height) {
         velocity = new Vector2(0, kecepatan);
@@ -61,6 +61,11 @@ public class Lava {
                 batch.draw(asset, x, y, scaledSize, scaledSize);
             }
         }
+    }
+
+    public void setKecepatan(float kecepatan) {
+        this.kecepatan = kecepatan;
+        velocity.set(0, kecepatan);
     }
 
     public float getKecepatan() {

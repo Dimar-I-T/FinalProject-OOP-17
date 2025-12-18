@@ -105,11 +105,11 @@ public class MenuState implements GameState {
         table.add(playerLabel).padBottom(20f);
         table.row();
 
-        Label skorLabel = new Label("High Score: ", skin, "default");
+        Label skorLabel = new Label("", skin, "default");
         table.add(skorLabel).padBottom(20f);
         table.row();
 
-        Label coinsCollectedLabel = new Label("Coins Collected: ", skin, "default");
+        Label coinsCollectedLabel = new Label("", skin, "default");
         table.add(coinsCollectedLabel).padBottom(40f);
         table.row();
 
@@ -119,7 +119,10 @@ public class MenuState implements GameState {
             @Override
             public void onFetched(String fetchedUsername, int skor, int coinsCollected, List<Leaderboard> leaderboardList) {
                 Gdx.app.postRunnable(() -> {
-                    playerLabel.setText("Hello, " + fetchedUsername);
+                    if (fetchedUsername != null) {
+                        playerLabel.setText("Hello, " + fetchedUsername);
+                    }
+
                     skorLabel.setText("High Score: " + skor);
                     coinsCollectedLabel.setText("Coins Collected: " + coinsCollected);
 
