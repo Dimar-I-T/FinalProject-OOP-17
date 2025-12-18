@@ -5,4 +5,5 @@ public interface DifficultyStrategy {
     public float getBatasNaikDifficulty();
     public DifficultyStrategy getNextDifficulty();
     public String getMode();
+    public float getTimerToNext();
 }

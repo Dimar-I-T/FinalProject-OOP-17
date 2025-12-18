@@ -44,7 +44,7 @@ public class PlayingState implements GameState {
     private final float GAP = 200f;
     private final float MIN_WIDTH = 160f;
     private final float MAX_WIDTH = 200f;
-    private final float POSISI_Y_AWAL = -1500f;
+    private final float POSISI_Y_AWAL = -1300f;
     private float jarakPlayerLava = 0f;
     private float batasNaikDifficulty = 0f;
     private boolean menungguUpdateBatas = false;
@@ -85,7 +85,7 @@ public class PlayingState implements GameState {
         dashCommand.add(new DashKiriCommand(player));
         dashCommand.add(new DashKananCommand(player));
         lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
-        setDifficulty(new EasyDifficulty());
+        setDifficulty(new VeryEasyDifficulty());
         batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
         player.setGroundSekarang(ground);
@@ -238,7 +238,7 @@ public class PlayingState implements GameState {
 
         if (menungguUpdateBatas) {
             timerBatas += delta;
-            if (timerBatas >= 60f) {
+            if (timerBatas >= difficultyStrategy.getTimerToNext()) {
                 batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
                 menungguUpdateBatas = false;
             }
@@ -397,7 +397,7 @@ public class PlayingState implements GameState {
         currentScore = 0f;
         gameManager.setScore(0);
         gameManager.setCoinsCollected(0);
-        setDifficulty(new EasyDifficulty());
+        setDifficulty(new VeryEasyDifficulty());
 
         groundsFactory.releaseAll();
         coinFactory.releaseAll();

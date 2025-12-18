@@ -3,12 +3,12 @@ package com.dimar.frontend.strategies;
 public class EasyDifficulty implements DifficultyStrategy {
     @Override
     public float getKecepatanLava() {
-        return 200f;
+        return 180f;
     }
 
     @Override
     public float getBatasNaikDifficulty() {
-        return 1000f;
+        return 500f;
     }
 
     @Override
@@ -19,5 +19,10 @@ public class EasyDifficulty implements DifficultyStrategy {
     @Override
     public String getMode() {
         return "Slow";
+    }
+
+    @Override
+    public float getTimerToNext() {
+        return 5f;
     }
 }
