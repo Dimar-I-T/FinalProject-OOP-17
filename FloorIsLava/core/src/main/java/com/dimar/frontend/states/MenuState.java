@@ -15,7 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.Background;
 import com.dimar.frontend.GameManager;
+import com.dimar.frontend.Leaderboard;
 import com.dimar.frontend.MenuBackground;
+
+import java.util.List;
 
 public class MenuState implements GameState {
     private MenuBackground background;
@@ -81,6 +84,11 @@ public class MenuState implements GameState {
         defaultStyle.font = bitmapFont;
         defaultStyle.fontColor = Color.WHITE;
         skin.add("default", defaultStyle);
+
+        Label.LabelStyle leaderboardStyle = new Label.LabelStyle();
+        leaderboardStyle.font = bitmapFont;
+        leaderboardStyle.fontColor = new Color(0.894f, 0.816f, 0.039f, 1f);
+        skin.add("leaderboard", leaderboardStyle);
     }
 
     private void buildUI() {
@@ -105,13 +113,28 @@ public class MenuState implements GameState {
         table.add(coinsCollectedLabel).padBottom(40f);
         table.row();
 
+        Label leaderboardLabel = new Label("", skin, "leaderboard");
+
         GameManager.getInstance().fetchUsername(new GameManager.UsernameCallback() {
             @Override
-            public void onFetched(String fetchedUsername, int skor, int coinsCollected) {
+            public void onFetched(String fetchedUsername, int skor, int coinsCollected, List<Leaderboard> leaderboardList) {
                 Gdx.app.postRunnable(() -> {
                     playerLabel.setText("Hello, " + fetchedUsername);
                     skorLabel.setText("High Score: " + skor);
                     coinsCollectedLabel.setText("Coins Collected: " + coinsCollected);
+
+                    int i = 1;
+                    String leaderboardString = "";
+                    for (Leaderboard leaderboard : leaderboardList) {
+                        if (i == 1) {
+                            leaderboardString += "Leaderboard (Top 5 by High Score):\n";
+                        }
+
+                        leaderboardString += i + ". " + leaderboard.getUsername() + " (High Score: " + leaderboard.getScore() + ", Total Coins: " + leaderboard.getCoinsCollected() + ")\n";
+                        i++;
+                    }
+
+                    leaderboardLabel.setText(leaderboardString);
                 });
             }
         });
@@ -134,7 +157,9 @@ public class MenuState implements GameState {
 
         table.add(textButton).padBottom(30f).width(200f).height(50f);
         table.row();
-        table.add(textButtonLogin).padBottom(100f).width(200f).height(50f);
+        table.add(textButtonLogin).padBottom(40f).width(200f).height(50f);
+        table.row();
+        table.add(leaderboardLabel);
     }
 
     @Override

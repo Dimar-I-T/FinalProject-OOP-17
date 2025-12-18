@@ -7,6 +7,9 @@ import com.dimar.frontend.observers.Observer;
 import com.dimar.frontend.observers.ScoreManager;
 import com.dimar.frontend.services.BackendService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameManager {
     private static GameManager instance;
     private final ScoreManager scoreManager;
@@ -56,7 +59,7 @@ public class GameManager {
     }
 
     public interface UsernameCallback {
-        void onFetched(String username, int skor, int coinsCollected);
+        void onFetched(String username, int skor, int coinsCollected, List<Leaderboard> leaderboardList);
     }
 
     public interface LoginCallback {
@@ -88,8 +91,42 @@ public class GameManager {
     }
 
     public void fetchUsername(UsernameCallback callback) {
+        List<Leaderboard> leaderboardList = new ArrayList<>();
+        backendService.getLeaderboard(5, new BackendService.RequestCallback() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JsonValue root = new JsonReader().parse(response);
+                    for (JsonValue item : root) {
+                        String username = item.getString("username", "guest");
+                        int score = item.getInt("highScore", 0);
+                        int coins = item.getInt("totalCoins", 0);
+
+                        Gdx.app.log("LEADERBOARD",
+                            "User: " + username +
+                                " | Score: " + score +
+                                " | Coins: " + coins
+                        );
+
+                        leaderboardList.add(new Leaderboard(username, score, coins));
+                    }
+                } catch (Exception e) {
+                    username = "guest";
+                    Gdx.app.error("ERROR", "Gagal parsing username", e);
+                }
+                callback.onFetched(username, score, coinsCollectedData, leaderboardList);
+            }
+
+            @Override
+            public void onError(String error) {
+                username = "guest";
+                callback.onFetched("guest", scoreManager.getScore(), coinsCollected, leaderboardList);
+                Gdx.app.error("ERROR", error);
+            }
+        });
+
         if (authToken == null) {
-            callback.onFetched("guest", scoreManager.getScore(), coinsCollected);
+            callback.onFetched("guest", scoreManager.getScore(), coinsCollected, leaderboardList);
             return;
         }
 
@@ -107,13 +144,13 @@ public class GameManager {
                     username = "guest";
                     Gdx.app.error("ERROR", "Gagal parsing username", e);
                 }
-                callback.onFetched(username, score, coinsCollectedData);
+                callback.onFetched(username, score, coinsCollectedData, leaderboardList);
             }
 
             @Override
             public void onError(String error) {
                 username = "guest";
-                callback.onFetched("guest", scoreManager.getScore(), coinsCollected);
+                callback.onFetched("guest", scoreManager.getScore(), coinsCollected, leaderboardList);
                 Gdx.app.error("ERROR", error);
             }
         });
@@ -124,7 +161,7 @@ public class GameManager {
             @Override
             public void onSuccess(String response) {
                 Gdx.app.log("PLAYER", "Pendaftaran berhasil");
-                loginPlayer(username, password, callback); // otomatis login setelah register
+                loginPlayer(username, password, callback);
             }
 
             @Override

@@ -57,6 +57,15 @@ public class BackendService {
         send(request, callback);
     }
 
+    public void getLeaderboard(int limit, RequestCallback callback) {
+        Request request = new Request.Builder()
+            .url(BASE_URL + "/api/players/leaderboard/high-score?limit=" + limit)
+            .get()
+            .build();
+
+        send(request, callback);
+    }
+
     public void submitScore(String playerId, int score, int coins, RequestCallback callback) {
         String json = String.format(
             "{\"playerId\":\"%s\",\"value\":%d,\"coinsCollected\":%d}",

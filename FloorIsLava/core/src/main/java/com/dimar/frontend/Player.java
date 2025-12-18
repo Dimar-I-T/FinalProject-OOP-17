@@ -211,8 +211,6 @@ public class Player {
         //System.out.println(isDead);
         if (velocity.y >= 0 && !isColliding)psm.jump(arah); // Masih ada bug
         else if (velocity.y < -40 && !isColliding) psm.fall(arah); // Masih ada bug
-        System.out.println(velocity.y);
-        System.out.println(isColliding);
 
         updateAnimation(delta);
         updateCollider();
