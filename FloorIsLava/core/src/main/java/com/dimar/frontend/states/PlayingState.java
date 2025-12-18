@@ -81,6 +81,7 @@ public class PlayingState implements GameState {
         dashCommand.add(new DashKiriCommand(player));
         dashCommand.add(new DashKananCommand(player));
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
+        player.setGroundSekarang(ground);
         lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
