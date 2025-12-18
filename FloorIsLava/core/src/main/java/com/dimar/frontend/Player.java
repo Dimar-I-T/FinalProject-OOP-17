@@ -27,7 +27,7 @@ public class Player {
     private float Delta;
     private boolean isColliding = false;
     private final float widthAwal;
-    private boolean isDead;
+    private boolean isDead = false;
     private float verticalDistanceTravelled = 0f;
     private final float waktuDash = 0.1f;
     private float jarakDash = 500f;
@@ -210,7 +210,9 @@ public class Player {
         }
         //System.out.println(isDead);
         if (velocity.y >= 0 && !isColliding)psm.jump(arah); // Masih ada bug
-        else if (velocity.y < 0) psm.fall(arah); // Masih ada bug
+        else if (velocity.y < -40 && !isColliding) psm.fall(arah); // Masih ada bug
+        System.out.println(velocity.y);
+        System.out.println(isColliding);
 
         updateAnimation(delta);
         updateCollider();
@@ -330,6 +332,10 @@ public class Player {
         }
 
         updateCollider();
+    }
+
+    public void setGroundSekarang(Ground groundSekarang) {
+        this.groundSekarang = groundSekarang;
     }
 
     public void setGrounded(boolean grounded) {
