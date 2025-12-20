@@ -116,7 +116,7 @@ public class Player {
         }
 
         if (velocity.y >= 0 && !isColliding)psm.jump(arah);
-        else if (velocity.y < -40 && !isColliding) psm.fall(arah);
+        else if (Math.ceil(velocity.y) < -36.05 && !isColliding) psm.fall(arah);
 
         updateAnimation(delta);
         updateCollider();

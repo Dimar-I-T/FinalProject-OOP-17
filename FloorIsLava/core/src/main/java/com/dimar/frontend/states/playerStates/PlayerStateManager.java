@@ -11,8 +11,10 @@ public class PlayerStateManager {
     }
 
     public void running(Arah arah){
-        removeState();
-        states.push(new RunningState(arah));
+        if (!(states.peek() instanceof JumpState)){
+            removeState();
+            states.push(new RunningState(arah));
+        }
     }
 
     public void jump(Arah arah){
