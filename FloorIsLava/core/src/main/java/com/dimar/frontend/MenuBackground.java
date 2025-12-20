@@ -55,6 +55,7 @@ public class MenuBackground {
     }
 
     public void render(SpriteBatch batch, GameState currentState){
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(backgroundRegion, 0f, 0f, width, height);
         for (Clouds c: clouds){
