@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -93,6 +94,7 @@ public class PlayingState implements GameState {
         setDifficulty(new VeryEasyDifficulty());
         batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
+        ground.setTexture(new Texture("Cobblestone.jpg"));
         player.setGroundSekarang(ground);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
@@ -127,6 +129,7 @@ public class PlayingState implements GameState {
         spriteBatch.begin();
         spriteBatch.disableBlending();
         background.render(spriteBatch, camera);
+        ground.renderTexture(spriteBatch, 300f, false);
         lava.renderTexture(spriteBatch);
         spriteBatch.enableBlending();
         player.renderTexture(spriteBatch);
@@ -145,7 +148,7 @@ public class PlayingState implements GameState {
             coin.renderShape(shapeRenderer);
         }
 
-        ground.render(shapeRenderer);
+        //ground.render(shapeRenderer);
 
 
 //        lava.render(shapeRenderer);

@@ -178,7 +178,7 @@ public class MenuState implements GameState {
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
-        background.render(batch, shapeRenderer);
+        background.render(batch, this);
         stage.draw();
     }
 

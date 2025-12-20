@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.dimar.frontend.states.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ public class MenuBackground {
         camera.setToOrtho(false, width, height);
         camera.update();
 
-        ground = new Ground(new Vector2(0,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
-        ground.setTexture(new Texture("menu/GROUND/Grass.png"));
+        ground = new Ground(new Vector2(0f,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
+        ground.setTexture(new Texture("menu/GROUND/dirt.jpg"));
         player = new Player(new Vector2(100f, 50f));
         player.setSize(150f);
 
@@ -53,17 +54,15 @@ public class MenuBackground {
         }
     }
 
-    public void render(SpriteBatch batch, ShapeRenderer renderer){
-        batch.setProjectionMatrix(camera.combined);
-        renderer.setProjectionMatrix(camera.combined);
+    public void render(SpriteBatch batch, GameState currentState){
         batch.begin();
         batch.draw(backgroundRegion, 0f, 0f, width, height);
         for (Clouds c: clouds){
             c.render(batch);
         }
-        batch.end();
-        ground.renderTexture(batch, renderer);
-        batch.begin();
+//        batch.end();
+        ground.renderTexture(batch, ground.getHeight() / 2f, true);
+//        batch.begin();
         player.renderTexture(batch);
         batch.end();
     }
