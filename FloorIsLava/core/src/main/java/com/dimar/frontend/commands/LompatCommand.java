@@ -6,13 +6,14 @@ import com.dimar.frontend.Player;
 
 public class LompatCommand implements Command {
     private final Player player;
+
     public LompatCommand(Player player) {
         this.player = player;
     }
 
     @Override
     public void execute() {
-        if (!player.getIsDead() && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        if (!player.getIsDead() && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             player.Lompat();
         }
     }

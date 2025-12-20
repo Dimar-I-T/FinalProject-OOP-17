@@ -1,6 +1,7 @@
 package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,6 +46,9 @@ public class Player {
     int arahDash = 0;
 
     private Ground groundSekarang;
+    private Sound jumpSound;
+
+    private float jumpBufferTimer = 0f;
 
     public Player(Vector2 startPosition) {
         widthAwal = Gdx.graphics.getWidth();
@@ -56,6 +60,8 @@ public class Player {
         arah = psm.getCurrentState().getArah();
         as = new AnimationSelector();
         stateTime = 0f;
+
+        jumpSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/jump.wav"));
     }
 
     public void setSize(float size){
@@ -91,13 +97,24 @@ public class Player {
             }
         }
 
+        if (jumpBufferTimer > 0) {
+            jumpBufferTimer -= delta;
+        }
+
         if (!isDead) {
+            if (jumpBufferTimer > 0 && isColliding) {
+                velocity.y = lompatan;
+                isColliding = false;
+                jumpSound.play(1.0f);
+                jumpBufferTimer = 0; // Reset biar ga double jump
+            }
+
             applyGravity(delta);
             updatePositionY(delta);
             updateVerticalDistance();
             Delta = delta;
         }
-        //System.out.println(isDead);
+
         if (velocity.y >= 0 && !isColliding)psm.jump(arah);
         else if (velocity.y < -40 && !isColliding) psm.fall(arah);
 
@@ -122,10 +139,7 @@ public class Player {
     }
 
     public void Lompat() {
-        if (isColliding) {
-            velocity.y = lompatan;
-            isColliding = false;
-        }
+        jumpBufferTimer = 0.1f; // Toleransi 0.1 detik
     }
 
     public void startDashKiri() {
@@ -230,8 +244,6 @@ public class Player {
     }
 
     public void checkBoundaries(float batasKiri) {
-//        System.out.println(batasKiri - (widthAwal - batasKiri) / 2f);
-//        System.out.println("x = " + position.x);
         if (position.x > (batasKiri + widthAwal) / 2f - WIDTH) {
             position.x = (batasKiri + widthAwal) / 2f - WIDTH;
             velocity.x = 0;
@@ -285,5 +297,9 @@ public class Player {
 
     public float getVerticalDistanceTravelled() {
         return verticalDistanceTravelled;
+    }
+
+    public void dispose() {
+        jumpSound.dispose();
     }
 }
