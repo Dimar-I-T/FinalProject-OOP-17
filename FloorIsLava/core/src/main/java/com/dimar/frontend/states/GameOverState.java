@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,7 @@ public class GameOverState implements GameState {
     private final GameStateManager gsm;
     private final BitmapFont font, font1;
     private final OrthographicCamera camera;
+    private final Texture deathImage;
     private float width;
     private final float widthAwal;
     private float height;
@@ -27,6 +29,8 @@ public class GameOverState implements GameState {
         widthAwal = Gdx.graphics.getWidth();
         heightAwal = Gdx.graphics.getHeight();
         this.gsm = gsm;
+
+        deathImage = new Texture(Gdx.files.internal("death.jpg"));
         font = new BitmapFont(Gdx.files.internal("arial.fnt"));
         font.setColor(Color.RED);
         font1 = new BitmapFont(Gdx.files.internal("arial.fnt"));
@@ -45,6 +49,7 @@ public class GameOverState implements GameState {
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.draw(deathImage, 0, 0, width, height);
         GlyphLayout layout = new GlyphLayout(font, "GAME OVER");
         GlyphLayout layout1 = new GlyphLayout(font1, "Press SPACE to restart");
         float x = (width - (width - widthAwal) - layout.width) / 2f;
@@ -65,5 +70,6 @@ public class GameOverState implements GameState {
     @Override
     public void dispose() {
         font.dispose();
+        deathImage.dispose();
     }
 }
