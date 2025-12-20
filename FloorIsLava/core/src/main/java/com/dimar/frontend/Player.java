@@ -47,8 +47,6 @@ public class Player {
 
     private Ground groundSekarang;
 
-    // Variable Sound
-    private Sound jumpSound;
     private Sound dieSound;
 
     private float jumpBufferTimer = 0f;
@@ -64,8 +62,6 @@ public class Player {
         as = new AnimationSelector();
         stateTime = 0f;
 
-        // Load sounds
-        jumpSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/jump.wav"));
         dieSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/die.wav"));
     }
 
@@ -110,8 +106,7 @@ public class Player {
             if (jumpBufferTimer > 0 && isColliding) {
                 velocity.y = lompatan;
                 isColliding = false;
-                jumpSound.play(1.0f);
-                jumpBufferTimer = 0; // Reset biar ga double jump
+                jumpBufferTimer = 0;
             }
 
             applyGravity(delta);
@@ -144,7 +139,7 @@ public class Player {
     }
 
     public void Lompat() {
-        jumpBufferTimer = 0.1f; // Toleransi 0.1 detik
+        jumpBufferTimer = 0.1f;
     }
 
     public void startDashKiri() {
@@ -306,7 +301,6 @@ public class Player {
     }
 
     public void dispose() {
-        jumpSound.dispose();
         dieSound.dispose();
     }
 }
