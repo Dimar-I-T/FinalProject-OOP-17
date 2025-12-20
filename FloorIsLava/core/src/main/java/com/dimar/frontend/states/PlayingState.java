@@ -16,7 +16,7 @@ import com.dimar.frontend.*;
 import com.dimar.frontend.commands.*;
 import com.dimar.frontend.factories.CoinFactory;
 import com.dimar.frontend.factories.GroundsFactory;
-import com.dimar.frontend.observers.DashUI;
+//import com.dimar.frontend.observers.DashUI;
 import com.dimar.frontend.observers.ScoreUIObserver;
 import com.dimar.frontend.strategies.*;
 
@@ -34,7 +34,7 @@ public class PlayingState implements GameState {
     private final Lava lava;
     private final OrthographicCamera camera;
     private final ScoreUIObserver scoreUIObserver;
-    private final DashUI dashUI;
+    //private final DashUI dashUI;
     private final Random random = new Random();
     private final GroundsFactory groundsFactory;
     private float maxWidth, maxHeight;
@@ -66,9 +66,12 @@ public class PlayingState implements GameState {
 
     private Sound coinSound;
 
+    private Texture dashUnavailable;
+    private Texture dashAvailable;
+
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
-        dashUI = new DashUI();
+        //dashUI = new DashUI();
         BitmapFont fontDash = new BitmapFont(Gdx.files.internal("arial.fnt"));
         fontDash.setColor(Color.WHITE);
         toRelease = new ArrayList<>();
@@ -111,6 +114,9 @@ public class PlayingState implements GameState {
         background = new Background();
 
         coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/coin-collected.wav"));
+
+        dashUnavailable = new Texture("dash/DASH.png");
+        dashAvailable = new Texture("dash/DASH_ACTIVE.png");
     }
 
     public void setPaused(boolean paused) {
@@ -137,6 +143,13 @@ public class PlayingState implements GameState {
             grounds1.render(spriteBatch);
         }
 
+        float iconSize = 120f;
+        float padding = 30f;
+        float x = camera.position.x - (maxWidth / 2f) + padding;
+        float y = camera.position.y + (maxHeight / 2f) - iconSize - padding - 10f;
+
+        spriteBatch.draw(bisaDash ? dashAvailable : dashUnavailable, x, y, iconSize, iconSize);
+
         spriteBatch.end();
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -154,9 +167,9 @@ public class PlayingState implements GameState {
 //        lava.render(shapeRenderer);
         shapeRenderer.end();
         scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected(), difficultyStrategy.getMode());
-        if (bisaDash) {
-            dashUI.render();
-        }
+//        if (bisaDash) {
+//            dashUI.render();
+//        }
     }
 
     public void update(float delta) {

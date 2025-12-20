@@ -123,7 +123,7 @@ public class MenuState implements GameState {
 
         // Judul dengan Animasi
         Label judul = new Label("FLOOR IS LAVA", skin, "titleStyle");
-        judul.setFontScale(2.0f);
+        judul.setFontScale(1f);
         judul.addAction(Actions.forever(
             Actions.sequence(
                 Actions.moveBy(0, 15f, 1f, Interpolation.sineOut),
@@ -135,17 +135,17 @@ public class MenuState implements GameState {
 
         // Info Player
         Label playerLabel = new Label("Hello, Guest!", skin, "infoStyle");
-        playerLabel.setFontScale(1.0f);
+        playerLabel.setFontScale(0.5f);
         mainTable.add(playerLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label skorLabel = new Label("", skin, "infoStyle");
-        skorLabel.setFontScale(1.0f);
+        skorLabel.setFontScale(0.5f);
         mainTable.add(skorLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label coinsCollectedLabel = new Label("", skin, "infoStyle");
-        coinsCollectedLabel.setFontScale(1.0f);
+        coinsCollectedLabel.setFontScale(0.5f);
         mainTable.add(coinsCollectedLabel).padBottom(50f).colspan(2);
         mainTable.row();
 
@@ -235,13 +235,13 @@ public class MenuState implements GameState {
             }
         });
 
-        mainTable.add(playButton).width(720f).height(180f).padRight(10f);
-        mainTable.add(loginButton).width(720f).height(180f);
+        mainTable.add(playButton).width(360f).height(90f).padRight(-45f);
+        mainTable.add(loginButton).width(360f).height(90f).padLeft(-45f);
         mainTable.row();
 
         // Update Origin setelah layouting (Ukuran tombol 720x180 menjadi 360, 90)
-        playButton.setOrigin(360f, 90f);
-        loginButton.setOrigin(360f, 90f);
+        playButton.setOrigin(180f, 45f);
+        loginButton.setOrigin(180f, 45f);
 
         // Leaderboard
         Label leaderboardLabel = new Label("Loading...", skin, "leaderboard");

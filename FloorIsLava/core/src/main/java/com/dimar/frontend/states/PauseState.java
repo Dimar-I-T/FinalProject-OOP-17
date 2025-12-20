@@ -11,6 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.GameManager;
 import com.dimar.frontend.commands.Command;
@@ -36,7 +40,7 @@ public class PauseState implements GameState {
         this.playingState = playingState;
         commands.add(new ResumeCommand(gsm));
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ExtendViewport(1280, 720));
         Gdx.input.setInputProcessor(stage); // Set input ke UI Stage
 
         loadAssets();
@@ -68,12 +72,14 @@ public class PauseState implements GameState {
         // ===== TABLE UI =====
         Table table = new Table();
         table.setFillParent(true);
+        table.center();
         table.getColor().a = 0f;
         table.addAction(Actions.fadeIn(0.2f));
         stage.addActor(table);
 
         // ===== TITLE =====
         Image titleImage = new Image(titleTexture);
+        titleImage.setScaling(Scaling.fit);
 
         // ===== BUTTONS =====
         Button resumeButton = createImageButton(
@@ -96,9 +102,9 @@ public class PauseState implements GameState {
         );
 
         // ===== LAYOUT =====
-        table.add(titleImage).padBottom(150).row();
-        table.add(resumeButton).padBottom(30).row();
-        table.add(menuButton);
+        table.add(titleImage).width(600f).height(120f).padBottom(120f).row();
+        table.add(resumeButton).width(360f).height(90f).padBottom(40f).row();
+        table.add(menuButton).width(360f).height(90f);
     }
 
     private Button createImageButton(Texture normal, Texture hover, Runnable onClick) {
@@ -108,6 +114,9 @@ public class PauseState implements GameState {
         style.down = new TextureRegionDrawable(hover);
 
         Button button = new Button(style);
+
+        button.setTransform(true);
+        button.setOrigin(180f, 45f);
 
         // Efek hover membesar
         button.addListener(new InputListener() {
