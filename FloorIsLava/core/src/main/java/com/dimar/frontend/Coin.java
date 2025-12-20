@@ -1,5 +1,9 @@
 package com.dimar.frontend;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -11,10 +15,35 @@ public class Coin {
     private boolean active;
 
     private float bobOffset;
+    private Animation<TextureRegion> animation;
+    private TextureRegion currentFrame;
+    private float stateTime;
 
     public Coin(Vector2 startPosition) {
         position = startPosition;
         collider = new Rectangle(startPosition.x, startPosition.y, radius * 2, radius * 2);
+        initiateAnimation();
+    }
+
+    private void initiateAnimation(){
+        Texture coin = new Texture("coins.png");
+
+        TextureRegion[][] coinFrames = TextureRegion.split(coin, 16, 16);
+        TextureRegion[] coinAnimation = new TextureRegion[6];
+        for (int i = 0; i < 6; i++){
+            coinAnimation[i] = coinFrames[0][i];
+        }
+
+        animation = new Animation<>(1/12f, coinAnimation);
+        animation.setPlayMode(Animation.PlayMode.LOOP);
+
+        currentFrame = coinAnimation[0];
+        stateTime = 0f;
+    }
+
+    private void updateAnimation(float delta){
+        stateTime += delta;
+        currentFrame = animation.getKeyFrame(stateTime, true);
     }
 
     public void update(float delta) {
@@ -22,12 +51,19 @@ public class Coin {
         bobOffset += bobSpeed * delta;
         float drawY = position.y + (float)(Math.sin(bobOffset) * 5f);
         collider.setPosition(position.x - radius, drawY - radius);
+        updateAnimation(delta);
     }
 
     public void renderShape(ShapeRenderer shapeRenderer) {
         float drawY = position.y + (float)(Math.sin(bobOffset) * 5f);
         shapeRenderer.setColor(1f, 1f, 0f,  1f);
         shapeRenderer.circle(position.x, drawY, radius);
+    }
+
+    public void render(SpriteBatch batch) {
+        float renderSize = 3.5f * radius;
+        float drawY = position.y + (float)(Math.sin(bobOffset) * 5f);
+        batch.draw(currentFrame, position.x, drawY, renderSize, renderSize);
     }
 
     public boolean isColliding(Rectangle playerCollider) {

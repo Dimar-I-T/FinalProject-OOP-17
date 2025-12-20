@@ -149,23 +149,24 @@ public class PlayingState implements GameState {
         float y = camera.position.y + (maxHeight / 2f) - iconSize - padding - 10f;
 
         spriteBatch.draw(bisaDash ? dashAvailable : dashUnavailable, x, y, iconSize, iconSize);
+        for (Coin coin : coinFactory.getInUse()) {
+            coin.render(spriteBatch);
+        }
 
         spriteBatch.end();
         shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        for (Grounds grounds1 : groundsFactory.getInUse()) {
 //            grounds1.renderShape(shapeRenderer);
 //        }
 
-        for (Coin coin : coinFactory.getInUse()) {
-            coin.renderShape(shapeRenderer);
-        }
+
 
         //ground.render(shapeRenderer);
 
 
 //        lava.render(shapeRenderer);
-        shapeRenderer.end();
+        //shapeRenderer.end();
         scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected(), difficultyStrategy.getMode());
 //        if (bisaDash) {
 //            dashUI.render();
