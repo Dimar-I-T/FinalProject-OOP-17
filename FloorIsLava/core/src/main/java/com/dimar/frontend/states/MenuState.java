@@ -1,19 +1,25 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.dimar.frontend.Background;
 import com.dimar.frontend.GameManager;
 import com.dimar.frontend.Leaderboard;
 import com.dimar.frontend.MenuBackground;
@@ -25,95 +31,222 @@ public class MenuState implements GameState {
     private final GameStateManager gsm;
     private final Stage stage;
     private Skin skin;
+    private Sound clickSound; // suara Klik
+    private Sound hoverSound; // suara Hover
 
     public MenuState(GameStateManager gsm) {
         background = new MenuBackground();
         this.gsm = gsm;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+
+        // Load Sounds
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/click.wav"));
+        hoverSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/hover.wav"));
+
         createBasicSkin();
         buildUI();
     }
 
     private void createBasicSkin() {
         skin = new Skin();
-        BitmapFont bitmapFont = new BitmapFont();
-        skin.add("default", bitmapFont);
-        Pixmap pixmapW = new Pixmap(1,1, Pixmap.Format.RGBA8888);
+
+        // Load Assets Gambar
+        Texture playTexture = new Texture(Gdx.files.internal("menu/play-button.png"));
+        Texture loginTexture = new Texture(Gdx.files.internal("menu/login-button.png"));
+        Texture playHoverTexture = new Texture(Gdx.files.internal("menu/play-button-hover.png"));
+        Texture loginHoverTexture = new Texture(Gdx.files.internal("menu/login-button-hover.png"));
+
+        // Filter Pixel
+        playTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        loginTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        playHoverTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        loginHoverTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        skin.add("playTexture", playTexture);
+        skin.add("loginTexture", loginTexture);
+        skin.add("playHoverTexture", playHoverTexture);
+        skin.add("loginHoverTexture", loginHoverTexture);
+
+        // Font
+        BitmapFont defaultFont = new BitmapFont();
+        skin.add("default", defaultFont);
+        BitmapFont pixelFont = new BitmapFont(Gdx.files.internal("04b30.fnt"));
+        pixelFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        skin.add("pixelFont", pixelFont);
+
+        // Warna Background Text
         Pixmap pixmapDG = new Pixmap(1,1, Pixmap.Format.RGBA8888);
-        Pixmap pixmapG = new Pixmap(1,1, Pixmap.Format.RGBA8888);
-
-        pixmapW.setColor(Color.WHITE);
-        pixmapW.fill();
-        skin.add("white", new Texture(pixmapW));
-
-        pixmapG.setColor(Color.GRAY);
-        pixmapG.fill();
-        skin.add("gray", new Texture(pixmapG));
-
         pixmapDG.setColor(Color.DARK_GRAY);
         pixmapDG.fill();
         skin.add("dark_gray", new Texture(pixmapDG));
-
         pixmapDG.dispose();
-        pixmapG.dispose();
-        pixmapW.dispose();
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = bitmapFont;
-        labelStyle.fontColor = Color.ORANGE;
-        skin.add("labelStyle", labelStyle);
+        // Palet Warna
+        Color titleColor = new Color(0.9f, 0.3f, 0.0f, 1f);
+        Color skyTextColor = new Color(0.1f, 0.1f, 0.35f, 1f);
+        Color groundTextColor = new Color(1.0f, 0.85f, 0.25f, 1f);
 
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = bitmapFont;
-        textFieldStyle.fontColor = Color.WHITE;
-        textFieldStyle.background = skin.newDrawable("dark_gray");
-        textFieldStyle.cursor = skin.newDrawable("white");
-        textFieldStyle.selection = skin.newDrawable("gray");
-        skin.add("textFieldStyle", textFieldStyle);
+        // Styles
+        Label.LabelStyle titleStyle = new Label.LabelStyle();
+        titleStyle.font = pixelFont;
+        titleStyle.fontColor = titleColor;
+        skin.add("titleStyle", titleStyle);
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = bitmapFont;
-        textButtonStyle.fontColor = Color.WHITE;
-        textButtonStyle.up = skin.newDrawable("gray");
-        textButtonStyle.down = skin.newDrawable("white");
-        textButtonStyle.over = skin.newDrawable("dark_gray");
-        skin.add("textButtonStyle", textButtonStyle);
-
-        Label.LabelStyle defaultStyle = new Label.LabelStyle();
-        defaultStyle.font = bitmapFont;
-        defaultStyle.fontColor = Color.WHITE;
-        skin.add("default", defaultStyle);
+        Label.LabelStyle infoStyle = new Label.LabelStyle();
+        infoStyle.font = pixelFont;
+        infoStyle.fontColor = skyTextColor;
+        skin.add("infoStyle", infoStyle);
 
         Label.LabelStyle leaderboardStyle = new Label.LabelStyle();
-        leaderboardStyle.font = bitmapFont;
-        leaderboardStyle.fontColor = new Color(0.894f, 0.816f, 0.039f, 1f);
+        leaderboardStyle.font = pixelFont;
+        leaderboardStyle.fontColor = groundTextColor;
         skin.add("leaderboard", leaderboardStyle);
+
+        Label.LabelStyle defaultStyle = new Label.LabelStyle();
+        defaultStyle.font = defaultFont;
+        defaultStyle.fontColor = Color.WHITE;
+        skin.add("default", defaultStyle);
     }
 
     private void buildUI() {
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
+        // Setup Tables
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.center();
+        stage.addActor(mainTable);
 
-        Label judul = new Label("FLOOR IS LAVA", skin, "labelStyle");
-        judul.setFontScale(2f);
-        table.add(judul).padBottom(20f);
-        table.row();
+        Table leaderboardTable = new Table();
+        leaderboardTable.setFillParent(true);
+        leaderboardTable.bottom().right().pad(20f);
+        stage.addActor(leaderboardTable);
 
-        Label playerLabel = new Label("Hello, guest", skin, "default");
-        table.add(playerLabel).padBottom(20f);
-        table.row();
+        // Judul dengan Animasi
+        Label judul = new Label("FLOOR IS LAVA", skin, "titleStyle");
+        judul.setFontScale(2.0f);
+        judul.addAction(Actions.forever(
+            Actions.sequence(
+                Actions.moveBy(0, 15f, 1f, Interpolation.sineOut),
+                Actions.moveBy(0, -15f, 1f, Interpolation.sineIn)
+            )
+        ));
+        mainTable.add(judul).padBottom(50f).colspan(2);
+        mainTable.row();
 
-        Label skorLabel = new Label("", skin, "default");
-        table.add(skorLabel).padBottom(20f);
-        table.row();
+        // Info Player
+        Label playerLabel = new Label("Hello, Guest!", skin, "infoStyle");
+        playerLabel.setFontScale(1.0f);
+        mainTable.add(playerLabel).padBottom(10f).colspan(2);
+        mainTable.row();
 
-        Label coinsCollectedLabel = new Label("", skin, "default");
-        table.add(coinsCollectedLabel).padBottom(40f);
-        table.row();
+        Label skorLabel = new Label("", skin, "infoStyle");
+        skorLabel.setFontScale(1.0f);
+        mainTable.add(skorLabel).padBottom(10f).colspan(2);
+        mainTable.row();
 
-        Label leaderboardLabel = new Label("", skin, "leaderboard");
+        Label coinsCollectedLabel = new Label("", skin, "infoStyle");
+        coinsCollectedLabel.setFontScale(1.0f);
+        mainTable.add(coinsCollectedLabel).padBottom(50f).colspan(2);
+        mainTable.row();
+
+        // Setup Tombol
+        TextureRegionDrawable playUp = new TextureRegionDrawable(new TextureRegion(skin.get("playTexture", Texture.class)));
+        TextureRegionDrawable playOver = new TextureRegionDrawable(new TextureRegion(skin.get("playHoverTexture", Texture.class)));
+
+        TextureRegionDrawable loginUp = new TextureRegionDrawable(new TextureRegion(skin.get("loginTexture", Texture.class)));
+        TextureRegionDrawable loginOver = new TextureRegionDrawable(new TextureRegion(skin.get("loginHoverTexture", Texture.class)));
+
+        ImageButton.ImageButtonStyle playStyle = new ImageButton.ImageButtonStyle();
+        playStyle.imageUp = playUp;
+        playStyle.imageOver = playOver;
+
+        ImageButton.ImageButtonStyle loginStyle = new ImageButton.ImageButtonStyle();
+        loginStyle.imageUp = loginUp;
+        loginStyle.imageOver = loginOver;
+
+        ImageButton playButton = new ImageButton(playStyle);
+        ImageButton loginButton = new ImageButton(loginStyle);
+
+        // Set Origin Center buat scaling/perbesaran
+        playButton.setTransform(true);
+        playButton.setOrigin(Align.center);
+        loginButton.setTransform(true);
+        loginButton.setOrigin(Align.center);
+
+        // Listener Play Button
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clickSound.play(); // Play Click Sound
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                gsm.set(new PlayingState(gsm));
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1) {
+                    hoverSound.play(); // Play Hover Sound
+                    playButton.clearActions();
+                    playButton.addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+                }
+                super.enter(event, x, y, pointer, fromActor);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (pointer == -1) {
+                    playButton.clearActions();
+                    playButton.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
+                super.exit(event, x, y, pointer, toActor);
+            }
+        });
+
+        // Listener Login Button
+        loginButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clickSound.play(); // Play Click Sound
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                gsm.set(new LoginState(gsm));
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1) {
+                    hoverSound.play(); // Play Hover Sound
+                    loginButton.clearActions();
+                    loginButton.addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+                }
+                super.enter(event, x, y, pointer, fromActor);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (pointer == -1) {
+                    loginButton.clearActions();
+                    loginButton.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
+                super.exit(event, x, y, pointer, toActor);
+            }
+        });
+
+        mainTable.add(playButton).width(720f).height(180f).padRight(10f);
+        mainTable.add(loginButton).width(720f).height(180f);
+        mainTable.row();
+
+        // Update Origin setelah layouting (Ukuran tombol 720x180 menjadi 360, 90)
+        playButton.setOrigin(360f, 90f);
+        loginButton.setOrigin(360f, 90f);
+
+        // Leaderboard
+        Label leaderboardLabel = new Label("Loading...", skin, "leaderboard");
+        leaderboardLabel.setFontScale(0.4f);
+        leaderboardTable.add(leaderboardLabel);
 
         GameManager.getInstance().fetchUsername(new GameManager.UsernameCallback() {
             @Override
@@ -122,47 +255,23 @@ public class MenuState implements GameState {
                     if (fetchedUsername != null) {
                         playerLabel.setText("Hello, " + fetchedUsername);
                     }
-
                     skorLabel.setText("High Score: " + skor);
                     coinsCollectedLabel.setText("Coins Collected: " + coinsCollected);
 
                     int i = 1;
-                    String leaderboardString = "";
-                    for (Leaderboard leaderboard : leaderboardList) {
-                        if (i == 1) {
-                            leaderboardString += "Leaderboard (Top 5 by High Score):\n";
-                        }
+                    StringBuilder leaderboardString = new StringBuilder();
+                    leaderboardString.append("LEADERBOARD:\n");
 
-                        leaderboardString += i + ". " + leaderboard.getUsername() + " (High Score: " + leaderboard.getScore() + ", Total Coins: " + leaderboard.getCoinsCollected() + ")\n";
+                    for (Leaderboard leaderboard : leaderboardList) {
+                        leaderboardString.append(i).append(". ").append(leaderboard.getUsername())
+                            .append("\n   Score: ").append(leaderboard.getScore())
+                            .append("\n");
                         i++;
                     }
-
-                    leaderboardLabel.setText(leaderboardString);
+                    leaderboardLabel.setText(leaderboardString.toString());
                 });
             }
         });
-
-        TextButton textButton = new TextButton("START GAME", skin, "textButtonStyle");
-        textButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                gsm.set(new PlayingState(gsm));
-            }
-        });
-
-        TextButton textButtonLogin = new TextButton("Login", skin, "textButtonStyle");
-        textButtonLogin.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                gsm.set(new LoginState(gsm));
-            }
-        });
-
-        table.add(textButton).padBottom(30f).width(200f).height(50f);
-        table.row();
-        table.add(textButtonLogin).padBottom(40f).width(200f).height(50f);
-        table.row();
-        table.add(leaderboardLabel);
     }
 
     @Override
@@ -184,8 +293,11 @@ public class MenuState implements GameState {
 
     @Override
     public void dispose() {
+        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
         background.dispose();
         stage.dispose();
         skin.dispose();
+        clickSound.dispose();
+        hoverSound.dispose();
     }
 }
