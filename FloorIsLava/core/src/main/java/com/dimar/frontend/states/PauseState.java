@@ -30,7 +30,7 @@ public class PauseState implements GameState {
         this.playingState = playingState;
 
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage); // Set input ke UI Stage
 
         loadAssets();
         buildUI();
@@ -38,16 +38,13 @@ public class PauseState implements GameState {
 
     private void loadAssets() {
         titleTexture = new Texture(Gdx.files.internal("pause/game-is-paused.png"));
-
         resumeNormal = new Texture(Gdx.files.internal("pause/resume-button.png"));
         resumeHover  = new Texture(Gdx.files.internal("pause/resume-button-hover.png"));
-
         menuNormal   = new Texture(Gdx.files.internal("pause/menu-button.png"));
         menuHover    = new Texture(Gdx.files.internal("pause/menu-button-hover.png"));
     }
 
     private void buildUI() {
-
         // ===== OVERLAY HITAM TRANSPARAN =====
         Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pm.setColor(new Color(0, 0, 0, 0.5f));
@@ -57,8 +54,8 @@ public class PauseState implements GameState {
 
         Image overlay = new Image(overlayTexture);
         overlay.setFillParent(true);
-        overlay.getColor().a = 0f; // start invisible
-        overlay.addAction(Actions.fadeIn(0.2f)); // fade-in 0.2s
+        overlay.getColor().a = 0f;
+        overlay.addAction(Actions.fadeIn(0.2f));
         stage.addActor(overlay);
 
         // ===== TABLE UI =====
@@ -75,7 +72,10 @@ public class PauseState implements GameState {
         Button resumeButton = createImageButton(
             resumeNormal,
             resumeHover,
-            () -> gsm.pop()
+            () -> {
+                playingState.setPaused(false);
+                gsm.pop();
+            }
         );
 
         Button menuButton = createImageButton(
@@ -83,19 +83,14 @@ public class PauseState implements GameState {
             menuHover,
             () -> {
                 GameManager.getInstance().endGame();
-                gsm.set(new MenuState(gsm));
+                gsm.clear();
+                gsm.push(new MenuState(gsm));
             }
         );
 
         // ===== LAYOUT =====
-        table.add(titleImage)
-            .padBottom(150)
-            .row();
-
-        table.add(resumeButton)
-            .padBottom(30)
-            .row();
-
+        table.add(titleImage).padBottom(150).row();
+        table.add(resumeButton).padBottom(30).row();
         table.add(menuButton);
     }
 
@@ -107,13 +102,12 @@ public class PauseState implements GameState {
 
         Button button = new Button(style);
 
-        // hover scale effect
+        // Efek hover membesar
         button.addListener(new InputListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 button.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
-
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 button.addAction(Actions.scaleTo(1f, 1f, 0.1f));
@@ -133,6 +127,7 @@ public class PauseState implements GameState {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        playingState.resize(width, height);
     }
 
     @Override
@@ -142,14 +137,15 @@ public class PauseState implements GameState {
 
     @Override
     public void render(ShapeRenderer shapeRenderer, SpriteBatch batch) {
-        playingState.render(shapeRenderer, new SpriteBatch());
+        playingState.render(shapeRenderer, batch);
+
         stage.draw();
     }
 
     @Override
     public void dispose() {
+        Gdx.input.setInputProcessor(null);
         stage.dispose();
-
         titleTexture.dispose();
         resumeNormal.dispose();
         resumeHover.dispose();

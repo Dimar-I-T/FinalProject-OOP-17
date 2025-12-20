@@ -60,6 +60,8 @@ public class PlayingState implements GameState {
 
     private Background background;
 
+    private boolean isPaused = false;
+
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
         dashUI = new DashUI();
@@ -102,6 +104,14 @@ public class PlayingState implements GameState {
         gameManager.startGame();
 
         background = new Background();
+    }
+
+    public void setPaused(boolean paused) {
+        this.isPaused = paused;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 
     @Override
@@ -150,8 +160,13 @@ public class PlayingState implements GameState {
         }
 
         for (Command command : playerCommand) {
+            if (isPaused && !(command instanceof PauseCommand)) {
+                continue;
+            }
             command.execute();
         }
+
+        if (isPaused) return;
 
         camera.position.set(camera.position.x, player.getPosition().y + maxHeight * 0.05f, 0);
         camera.update();
@@ -421,5 +436,6 @@ public class PlayingState implements GameState {
         shapeRenderer.dispose();
         groundsFactory.releaseAll();
         coinFactory.releaseAll();
+        player.dispose();
     }
 }
