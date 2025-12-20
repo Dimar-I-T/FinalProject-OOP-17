@@ -13,12 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.GameManager;
+import com.dimar.frontend.commands.Command;
+import com.dimar.frontend.commands.ResumeCommand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PauseState implements GameState {
 
     private GameStateManager gsm;
     private Stage stage;
     private PlayingState playingState;
+    private List<Command> commands = new ArrayList<>();
 
     // Assets
     private Texture titleTexture;
@@ -28,6 +34,7 @@ public class PauseState implements GameState {
     public PauseState(GameStateManager gsm, PlayingState playingState) {
         this.gsm = gsm;
         this.playingState = playingState;
+        commands.add(new ResumeCommand(gsm));
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage); // Set input ke UI Stage
@@ -132,6 +139,10 @@ public class PauseState implements GameState {
 
     @Override
     public void update(float delta) {
+        for (Command command : commands) {
+            command.execute();
+        }
+
         stage.act(delta);
     }
 

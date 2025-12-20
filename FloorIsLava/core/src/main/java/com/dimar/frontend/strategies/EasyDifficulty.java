@@ -8,7 +8,7 @@ public class EasyDifficulty implements DifficultyStrategy {
 
     @Override
     public float getBatasNaikDifficulty() {
-        return 500f;
+        return 800f;
     }
 
     @Override
