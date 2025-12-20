@@ -1,6 +1,7 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -62,6 +63,8 @@ public class PlayingState implements GameState {
 
     private boolean isPaused = false;
 
+    private Sound coinSound;
+
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
         dashUI = new DashUI();
@@ -104,6 +107,8 @@ public class PlayingState implements GameState {
         gameManager.startGame();
 
         background = new Background();
+
+        coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/coin-collected.wav"));
     }
 
     public void setPaused(boolean paused) {
@@ -291,6 +296,9 @@ public class PlayingState implements GameState {
         while (iterator.hasNext()) {
             Coin coin = iterator.next();
             if (coin.isColliding(colliderPlayer)) {
+                // Play Sound coin volume 60%
+                coinSound.play(0.3f);
+
                 gameManager.addCoin();
                 coin.setActive(false);
                 iterator.remove();
@@ -437,5 +445,6 @@ public class PlayingState implements GameState {
         groundsFactory.releaseAll();
         coinFactory.releaseAll();
         player.dispose();
+        coinSound.dispose();
     }
 }
