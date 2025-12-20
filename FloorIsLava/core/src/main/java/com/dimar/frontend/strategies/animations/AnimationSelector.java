@@ -20,7 +20,6 @@ public class AnimationSelector {
 
     public TextureRegion getCurrentFrame(PlayerState state, float stateTime, Arah arah){
         int n = 0;
-        System.out.println(state);
         if (state instanceof JumpState) {
             n = 2;
         } else if (state instanceof FallState) {

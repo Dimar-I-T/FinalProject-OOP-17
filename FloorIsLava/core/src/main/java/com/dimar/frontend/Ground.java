@@ -1,12 +1,14 @@
 package com.dimar.frontend;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.dimar.frontend.states.GameState;
+import com.dimar.frontend.states.MenuState;
+import com.dimar.frontend.states.PlayingState;
 
 public class Ground {
     private final float width;
@@ -40,17 +42,26 @@ public class Ground {
         shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
     }
 
-    public void renderTexture(SpriteBatch batch, ShapeRenderer renderer){
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BROWN);
-        renderer.rect(position.x, position.y, width,height);
-        renderer.end();
-
-        batch.begin();
-        for (float x = 0; x < Gdx.graphics.getWidth(); x += 1920f / 2f){
-            batch.draw(texture, x, height + position.y - 15f, 1920f / 2f, 1080f / 2f);
+    public void renderTexture(SpriteBatch batch, float tileSize, boolean grass){
+//        renderer.begin(ShapeRenderer.ShapeType.Filled);
+//        renderer.setColor(Color.BROWN);
+//        renderer.rect(position.x, position.y, width,height);
+//        renderer.end();
+        float startY = collider.y;
+        if (!grass) startY -= 100f;
+        for (float y = startY; y < this.collider.height + this.collider.y; y += tileSize){
+            for (float x = 0f; x < collider.width; x += tileSize){
+                batch.draw(texture, x, y, tileSize, tileSize);
+            }
         }
-        batch.end();
+
+        if(grass){
+            Texture grassTexture = new Texture("menu/GROUND/Grass.png");
+
+            for (float x = 0; x < Gdx.graphics.getWidth(); x += 1920f / 2f){
+                batch.draw(grassTexture, x, height + position.y - 15f, 1920f / 2f, 1080f / 2f);
+            }
+        }
     }
 
     public float getHeight() {
