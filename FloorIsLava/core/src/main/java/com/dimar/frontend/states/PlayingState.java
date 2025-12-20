@@ -296,7 +296,7 @@ public class PlayingState implements GameState {
         while (iterator.hasNext()) {
             Coin coin = iterator.next();
             if (coin.isColliding(colliderPlayer)) {
-                // Play Sound coin volume 60%
+                // Play Sound coin volume 30%
                 coinSound.play(0.3f);
 
                 gameManager.addCoin();
