@@ -46,7 +46,10 @@ public class Player {
     int arahDash = 0;
 
     private Ground groundSekarang;
+
+    // Variable Sound
     private Sound jumpSound;
+    private Sound dieSound;
 
     private float jumpBufferTimer = 0f;
 
@@ -61,7 +64,9 @@ public class Player {
         as = new AnimationSelector();
         stateTime = 0f;
 
+        // Load sounds
         jumpSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/jump.wav"));
+        dieSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/die.wav"));
     }
 
     public void setSize(float size){
@@ -260,6 +265,7 @@ public class Player {
     public void die() {
         if (!isDead) {
             isDead = true;
+            dieSound.play(1.0f);
         }
 
         velocity.set(0, 0);
@@ -301,5 +307,6 @@ public class Player {
 
     public void dispose() {
         jumpSound.dispose();
+        dieSound.dispose();
     }
 }
