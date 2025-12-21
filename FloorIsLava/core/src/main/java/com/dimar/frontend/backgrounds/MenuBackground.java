@@ -1,18 +1,20 @@
-package com.dimar.frontend;
+package com.dimar.frontend.backgrounds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.dimar.frontend.Clouds;
+import com.dimar.frontend.Ground;
+import com.dimar.frontend.Player;
 import com.dimar.frontend.states.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginBackground {
+public class MenuBackground {
     private Texture backgroundTexture;
     private TextureRegion backgroundRegion;
     private List<Clouds> clouds;
@@ -22,8 +24,8 @@ public class LoginBackground {
     private Ground ground;
     private OrthographicCamera camera;
 
-    public LoginBackground() {
-        backgroundTexture = new Texture(Gdx.files.internal("login/sky.png"));
+    public MenuBackground() {
+        backgroundTexture = new Texture(Gdx.files.internal("menu/SKY/1.png"));
         backgroundRegion = new TextureRegion(backgroundTexture);
         clouds = new ArrayList<>();
 
@@ -39,11 +41,11 @@ public class LoginBackground {
         player.setSize(150f);
 
         clouds.add(0, new Clouds(0, ground.getHeight(),20f, 0f));
-        clouds.get(0).setTexture(new Texture("login/cloud-1.png"));
+        clouds.get(0).setTexture(new Texture("menu/SKY/2.png"));
         clouds.add(1, new Clouds(0,ground.getHeight(),10f, 0f));
-        clouds.get(1).setTexture(new Texture("login/cloud-2.png"));
+        clouds.get(1).setTexture(new Texture("menu/SKY/3.png"));
         clouds.add(2, new Clouds(0, ground.getHeight(),5f, 0f));
-        clouds.get(2).setTexture(new Texture("login/cloud-3.png"));
+        clouds.get(2).setTexture(new Texture("menu/SKY/4.png"));
     }
 
     public void update(float delta){
@@ -62,7 +64,7 @@ public class LoginBackground {
             c.render(batch);
         }
 //        batch.end();
-        ground.renderTexture(batch, ground.getHeight() / 2f, true);
+        ground.renderTexture(batch, ground.getHeight() / 2f, true, new Texture("menu/GROUND/Grass.png"));
 //        batch.begin();
         player.renderTexture(batch);
         batch.end();

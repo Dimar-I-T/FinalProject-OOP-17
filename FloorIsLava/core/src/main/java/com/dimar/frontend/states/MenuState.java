@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.GameManager;
 import com.dimar.frontend.Leaderboard;
-import com.dimar.frontend.MenuBackground;
+import com.dimar.frontend.backgrounds.MenuBackground;
 
 import java.util.List;
 

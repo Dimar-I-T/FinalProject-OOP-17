@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.dimar.frontend.*;
+import com.dimar.frontend.backgrounds.Background;
 import com.dimar.frontend.commands.*;
 import com.dimar.frontend.factories.CoinFactory;
 import com.dimar.frontend.factories.GroundsFactory;
@@ -144,7 +145,7 @@ public class PlayingState implements GameState {
         spriteBatch.begin();
         spriteBatch.disableBlending();
         background.render(spriteBatch, camera);
-        ground.renderTexture(spriteBatch, 300f, false);
+        ground.renderTexture(spriteBatch, 300f, false, null);
         lava.renderTexture(spriteBatch);
         spriteBatch.enableBlending();
         player.renderTexture(spriteBatch);

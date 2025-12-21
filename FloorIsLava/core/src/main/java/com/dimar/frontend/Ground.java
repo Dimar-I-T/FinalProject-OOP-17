@@ -42,7 +42,7 @@ public class Ground {
         shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
     }
 
-    public void renderTexture(SpriteBatch batch, float tileSize, boolean grass){
+    public void renderTexture(SpriteBatch batch, float tileSize, boolean grass, Texture grassTexture){
 //        renderer.begin(ShapeRenderer.ShapeType.Filled);
 //        renderer.setColor(Color.BROWN);
 //        renderer.rect(position.x, position.y, width,height);
@@ -56,8 +56,6 @@ public class Ground {
         }
 
         if(grass){
-            Texture grassTexture = new Texture("menu/GROUND/Grass.png");
-
             for (float x = 0; x < Gdx.graphics.getWidth(); x += 1920f / 2f){
                 batch.draw(grassTexture, x, height + position.y - 15f, 1920f / 2f, 1080f / 2f);
             }
