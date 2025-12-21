@@ -29,6 +29,7 @@ import java.util.List;
 
 public class MenuState implements GameState {
     private MenuBackground background;
+    private Texture scroll;
     private final GameStateManager gsm;
     private final Stage stage;
     private Skin skin;
@@ -108,13 +109,18 @@ public class MenuState implements GameState {
 
         Label.LabelStyle leaderboardStyle = new Label.LabelStyle();
         leaderboardStyle.font = pixelFont;
-        leaderboardStyle.fontColor = groundTextColor;
+        leaderboardStyle.fontColor = new Color(0.2f, 0.1f, 0.05f, 1f);
         skin.add("leaderboard", leaderboardStyle);
 
         Label.LabelStyle defaultStyle = new Label.LabelStyle();
         defaultStyle.font = defaultFont;
         defaultStyle.fontColor = Color.WHITE;
         skin.add("default", defaultStyle);
+
+        //scroll
+        scroll = new Texture("menu/scroll.png");
+        scroll.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        skin.add("scroll", scroll);
     }
 
     private void buildUI() {
@@ -125,13 +131,17 @@ public class MenuState implements GameState {
         stage.addActor(mainTable);
 
         Table leaderboardTable = new Table();
-        leaderboardTable.setFillParent(true);
-        leaderboardTable.bottom().right().pad(20f);
-        stage.addActor(leaderboardTable);
+        leaderboardTable.setBackground(skin.getDrawable("scroll"));
+        leaderboardTable.pad(60f, 80f, 60f, 80f);
+        Table wrapperTable = new Table();
+        wrapperTable.setFillParent(true);
+        wrapperTable.bottom().right().pad(20f);
+        wrapperTable.add(leaderboardTable).width(350f).height(450f);
+        stage.addActor(wrapperTable);
 
         // Judul dengan Animasi
         Label judul = new Label("FLOOR IS LAVA", skin, "titleStyle");
-        judul.setFontScale(2.0f); // Default scale
+        judul.setFontScale(1.5f); // Default scale
         judul.addAction(Actions.forever(
             Actions.sequence(
                 Actions.moveBy(0, 15f, 1f, Interpolation.sineOut),
@@ -143,17 +153,17 @@ public class MenuState implements GameState {
 
         // Info Player
         Label playerLabel = new Label("Hello, Guest!", skin, "infoStyle");
-        playerLabel.setFontScale(1.0f);
+        playerLabel.setFontScale(0.5f);
         mainTable.add(playerLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label skorLabel = new Label("", skin, "infoStyle");
-        skorLabel.setFontScale(1.0f);
+        skorLabel.setFontScale(0.5f);
         mainTable.add(skorLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label coinsCollectedLabel = new Label("", skin, "infoStyle");
-        coinsCollectedLabel.setFontScale(1.0f);
+        coinsCollectedLabel.setFontScale(0.5f);
         mainTable.add(coinsCollectedLabel).padBottom(50f).colspan(2);
         mainTable.row();
 
@@ -243,8 +253,8 @@ public class MenuState implements GameState {
             }
         });
 
-        mainTable.add(playButton).width(360f).height(90f).padRight(-45f);
-        mainTable.add(loginButton).width(360f).height(90f).padLeft(-45f);
+        mainTable.add(playButton).width(360f).height(90f).padRight(-250f);
+        mainTable.add(loginButton).width(360f).height(90f).padLeft(-250f);
         mainTable.row();
 
         // Update Origin setelah layouting
@@ -253,7 +263,7 @@ public class MenuState implements GameState {
 
         // Leaderboard
         Label leaderboardLabel = new Label("Loading...", skin, "leaderboard");
-        leaderboardLabel.setFontScale(0.4f);
+        leaderboardLabel.setFontScale(0.3f);
         leaderboardTable.add(leaderboardLabel);
 
         GameManager.getInstance().fetchUsername(new GameManager.UsernameCallback() {
@@ -302,6 +312,7 @@ public class MenuState implements GameState {
     @Override
     public void dispose() {
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+        if(scroll != null) scroll.dispose();
         background.dispose();
         stage.dispose();
         skin.dispose();
