@@ -197,7 +197,7 @@ public class MenuState implements GameState {
             public void clicked(InputEvent event, float x, float y) {
                 clickSound.play(); // Play Click Sound
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                gsm.set(new PlayingState(gsm));
+                gsm.set(new ControlState(gsm));
             }
 
             @Override
@@ -281,7 +281,10 @@ public class MenuState implements GameState {
                     leaderboardString.append("LEADERBOARD:\n");
 
                     for (Leaderboard leaderboard : leaderboardList) {
-                        leaderboardString.append(i).append(". ").append(leaderboard.getUsername())
+                        String rawName = leaderboard.getUsername();
+                        String displayName = (rawName.length() > 10) ? rawName.substring(0, 10) + "..." : rawName;
+
+                        leaderboardString.append(i).append(". ").append(displayName)
                             .append("\n   Score: ").append(leaderboard.getScore())
                             .append("\n");
                         i++;

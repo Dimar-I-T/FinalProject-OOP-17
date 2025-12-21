@@ -53,6 +53,11 @@ public class GameOverState implements GameState {
         if (Gdx.input.isKeyJustPressed((Input.Keys.SPACE))) {
             gsm.set(new PlayingState(gsm));
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            GameManager.getInstance().endGame();
+            gsm.set(new MenuState(gsm));
+        }
     }
 
     @Override
@@ -63,7 +68,7 @@ public class GameOverState implements GameState {
         GlyphLayout layout = new GlyphLayout(font, "GAME OVER");
         GlyphLayout scoreLayout = new GlyphLayout(font1, "Your Score: " + finalScore);
         GlyphLayout coinLayout = new GlyphLayout(font1, "Coins Collected: " + finalCoins);
-        GlyphLayout layout1 = new GlyphLayout(font1, "Press SPACE to restart");
+        GlyphLayout layout1 = new GlyphLayout(font1, "SPC/ESC to Restart/Quit");
 
         float corner = 40f;
         float x = corner;
