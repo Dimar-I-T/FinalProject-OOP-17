@@ -39,7 +39,7 @@ public class MenuBackground {
 
         ground = new Ground(new Vector2(0f,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
         ground.setTexture(new Texture("menu/GROUND/dirt.jpg"));
-        player = new Player(new Vector2(Gdx.graphics.getWidth() / 7f, 50f));
+        player = new Player(new Vector2(Gdx.graphics.getWidth() / 7f, 100f));
         player.setSize(150f);
 
         clouds.add(0, new Clouds(0, ground.getHeight(),20f, 0f));
