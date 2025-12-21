@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dimar.frontend.GameManager;
-import com.dimar.frontend.LoginBackground;
+import com.dimar.frontend.backgrounds.LoginBackground;
 
 public class LoginState implements GameState {
 

@@ -1,4 +1,4 @@
-package com.dimar.frontend;
+package com.dimar.frontend.backgrounds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
