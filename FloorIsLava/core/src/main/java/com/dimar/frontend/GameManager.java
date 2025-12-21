@@ -40,6 +40,7 @@ public class GameManager {
 
     public void startGame() {
         scoreManager.setScore(0);
+        coinsCollected = 0;
         gameActive = true;
         System.out.println("Game Started!");
     }
@@ -173,7 +174,6 @@ public class GameManager {
 
         int score = scoreManager.getScore();
         int coinsToSubmit = coinsCollected;
-        coinsCollected = 0;
         backendService.submitScore(currentPlayerId, score, coinsToSubmit, new BackendService.RequestCallback() {
             @Override
             public void onSuccess(String response) {
