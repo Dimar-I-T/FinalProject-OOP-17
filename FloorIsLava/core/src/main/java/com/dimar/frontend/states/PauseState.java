@@ -41,7 +41,7 @@ public class PauseState implements GameState {
     public PauseState(GameStateManager gsm, PlayingState playingState) {
         this.gsm = gsm;
         this.playingState = playingState;
-        commands.add(new ResumeCommand(gsm));
+        commands.add(new ResumeCommand(gsm, playingState));
 
         // game dipause dan musiknya berhenti
         playingState.setPaused(true);
