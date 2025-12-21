@@ -323,7 +323,7 @@ public class MenuState implements GameState {
                 if (pointer == -1) {
                     hoverSound.play();
                     exitButton.clearActions();
-                    exitButton.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f));
+                    exitButton.addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
                 }
                 super.enter(event, x, y, pointer, fromActor);
@@ -350,7 +350,8 @@ public class MenuState implements GameState {
         playButton.setOrigin(180f, 45f);
         loginButton.setOrigin(180f, 45f);
         creditButton.setOrigin(150f, 37.5f);
-        exitButton.setOrigin(180f, 45f);
+
+        exitButton.setOrigin(70f, 35f);
 
         Exit.add(exitButton).width(140f).height(70f);
 
