@@ -20,8 +20,8 @@ public class Player {
     public static float speed = 350f;
     public static float lompatan = 1000f;
     public static float gravity = 2000f;
-    private float WIDTH = 64f;
-    private float HEIGHT = 64f;
+    private float WIDTH = 26f;
+    private float HEIGHT = 40f;
     private float Delta;
     private boolean isColliding = false;
     private final float widthAwal;
@@ -82,8 +82,9 @@ public class Player {
     }
 
     public void renderTexture(SpriteBatch batch){
+        float size = HEIGHT * 1.6f;
         if (currentFrame != null) {
-            batch.draw(currentFrame.getTexture(), position.x, position.y, HEIGHT * HEIGHT / WIDTH + 10f, HEIGHT + 10f);
+            batch.draw(currentFrame.getTexture(), position.x - WIDTH, position.y, size, size);
         }
     }
 

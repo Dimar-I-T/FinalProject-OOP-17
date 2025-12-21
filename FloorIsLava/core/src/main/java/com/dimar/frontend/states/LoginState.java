@@ -53,6 +53,7 @@ public class LoginState implements GameState {
         bgMusic.setVolume(0.5f);
         bgMusic.play();
 
+        Gdx.input.setCursorCatched(false);
         createBasicSkin();
         buildUI();
     }
