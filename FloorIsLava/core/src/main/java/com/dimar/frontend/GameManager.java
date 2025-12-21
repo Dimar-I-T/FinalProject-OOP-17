@@ -20,7 +20,7 @@ public class GameManager {
     private String currentPlayerId = null;
     private int score = 0;
     private int coinsCollectedData = 0;
-    int coinsCollected = 0;
+    private int coinsCollected = 0;
 
     private GameManager() {
         scoreManager = new ScoreManager();
@@ -172,7 +172,9 @@ public class GameManager {
         }
 
         int score = scoreManager.getScore();
-        backendService.submitScore(currentPlayerId, score, coinsCollected, new BackendService.RequestCallback() {
+        int coinsToSubmit = coinsCollected;
+        coinsCollected = 0;
+        backendService.submitScore(currentPlayerId, score, coinsToSubmit, new BackendService.RequestCallback() {
             @Override
             public void onSuccess(String response) {
                 Gdx.app.log("SUCCESS", "Berhasil mensubmit score");
