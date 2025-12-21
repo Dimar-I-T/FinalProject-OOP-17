@@ -139,7 +139,7 @@ public class LoginState implements GameState {
         // bikin background
         TextureRegionDrawable fieldBg = createRoundedRect(700, 80, 20, Color.WHITE);
         // SET PADDING
-        fieldBg.setPadding(25f, 25f, 20f, 20f);
+        fieldBg.setPadding(15f, 15f, 10f, 10f);
         textFieldStyle.background = fieldBg;
 
         textFieldStyle.cursor = skin.newDrawable("black");
@@ -169,18 +169,21 @@ public class LoginState implements GameState {
         stage.addActor(table);
 
         // Judul & Prompt
-        Label judul = new Label("LOGIN", skin, "labelStyle"); judul.setFontScale(2.5f);
+        Label judul = new Label("LOGIN", skin, "labelStyle"); judul.setFontScale(1f);
         Label promptUsername = new Label("Enter Your Username:", skin, "navyLabelStyle");
-
         nameField = new TextField("", skin, "textFieldStyle");
+        promptUsername.setFontScale(0.7f);
         addInputHoverEffect(nameField);
 
         Label promptPassword = new Label("Enter Your Password:", skin, "navyLabelStyle");
         passwordField = new TextField("", skin, "textFieldStyle");
         passwordField.setPasswordMode(true); passwordField.setPasswordCharacter('*');
+        promptPassword.setFontScale(0.7f);
         addInputHoverEffect(passwordField);
 
-        errorLabel = new Label("", skin, "error"); errorLabel.setVisible(false);
+        errorLabel = new Label("", skin, "error");
+        errorLabel.setFontScale(0.6f);
+        errorLabel.setVisible(false);
 
         // --- BUTTONS ---
         ImageButton loginButton = new ImageButton(skin, "loginImgStyle");
@@ -223,44 +226,44 @@ public class LoginState implements GameState {
         addButtonHoverEffect(registerButton);
 
         Label haveNoAcc = new Label("Don't have an account?", skin, "strikingStyle");
-        haveNoAcc.setFontScale(1.0f);
+        haveNoAcc.setFontScale(0.6f);
 
         // --- LAYOUT ---
 
         // Judul
-        table.add(judul).padBottom(50f);
+        table.add(judul).padBottom(20f).padTop(90f);
         table.row();
 
         // Form Username
         table.add(promptUsername).padBottom(20f); table.row();
-        table.add(nameField).width(700f).height(80f).padBottom(30f); table.row();
+        table.add(nameField).width(700f).height(80f).padBottom(10f); table.row();
 
         // Form Password
         table.add(promptPassword).padBottom(20f); table.row();
         table.add(passwordField).width(700f).height(80f).padBottom(10f); table.row();
 
         // Error Label
-        table.add(errorLabel).padBottom(20f); table.row();
+        table.add(errorLabel).padBottom(10f); table.row();
 
         // --- BUTTONS ---
 
         // LOGIN
-        table.add(loginButton).width(700f).height(150f).padBottom(20f);
+        table.add(loginButton).width(420f).height(90f).padBottom(20f);
         table.row();
 
         // MENU
-        table.add(menuButton).width(700f).height(150f).padBottom(20f);
+        table.add(menuButton).width(420f).height(90f).padBottom(5f);
         table.row();
 
         // Jarak Pemisah ke Bagian Register
-        table.add().height(30f);
+        table.add().height(5f);
         table.row();
 
         // Label Don't have account
         table.add(haveNoAcc).padBottom(15f); table.row();
 
         // REGISTER
-        table.add(registerButton).width(750f).height(150f).padBottom(30f);
+        table.add(registerButton).width(420f).height(90f).padBottom(50f);
     }
 
     private void handleLogin() {

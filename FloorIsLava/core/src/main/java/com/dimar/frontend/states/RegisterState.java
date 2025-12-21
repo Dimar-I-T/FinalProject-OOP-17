@@ -135,7 +135,7 @@ public class RegisterState implements GameState {
         // Background Putih Rounded
         TextureRegionDrawable fieldBg = createRoundedRect(700, 80, 20, Color.WHITE);
         // Padding biar teks di tengah vertikal
-        fieldBg.setPadding(25f, 25f, 20f, 20f);
+        fieldBg.setPadding(15f, 15f, 10f, 10f);
         textFieldStyle.background = fieldBg;
 
         textFieldStyle.cursor = skin.newDrawable("black");
@@ -163,16 +163,18 @@ public class RegisterState implements GameState {
 
         // Judul & Prompt
         Label judul = new Label("REGISTER", skin, "labelStyle");
-        judul.setFontScale(2.5f);
+        judul.setFontScale(1f);
 
         Label promptUsername = new Label("Enter Your Username:", skin, "navyLabelStyle");
         nameField = new TextField("", skin, "textFieldStyle");
+        promptUsername.setFontScale(0.7f);
         addInputHoverEffect(nameField);
 
         Label promptPassword = new Label("Enter Your Password:", skin, "navyLabelStyle");
         passwordField = new TextField("", skin, "textFieldStyle");
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
+        promptPassword.setFontScale(0.7f);
         addInputHoverEffect(passwordField);
 
         errorLabel = new Label("", skin, "error");
@@ -209,7 +211,7 @@ public class RegisterState implements GameState {
 
         // --- LAYOUT ---
         // Judul
-        table.add(judul).padBottom(50f);
+        table.add(judul).padBottom(20f);
         table.row();
 
         // Form Username
@@ -221,13 +223,13 @@ public class RegisterState implements GameState {
         table.add(passwordField).width(700f).height(80f).padBottom(10f); table.row();
 
         // Error Label
-        table.add(errorLabel).padBottom(20f); table.row();
+        table.add(errorLabel).height(40f).padBottom(20f); table.row();
 
         // Buttons Stacked
-        table.add(registerButton).width(700f).height(150f).padBottom(20f);
+        table.add(registerButton).width(560f).height(120f).padBottom(20f);
         table.row();
 
-        table.add(menuButton).width(700f).height(150f).padBottom(20f);
+        table.add(menuButton).width(560f).height(120f).padBottom(20f);
         table.row();
     }
 
@@ -237,6 +239,7 @@ public class RegisterState implements GameState {
 
         if (username.trim().isEmpty() || password.trim().isEmpty()) {
             errorLabel.setText("Username or password can't be empty");
+            errorLabel.setFontScale(0.6f);
             errorLabel.setVisible(true);
             return;
         }
