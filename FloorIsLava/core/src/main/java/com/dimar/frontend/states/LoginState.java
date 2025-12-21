@@ -284,7 +284,7 @@ public class LoginState implements GameState {
             @Override
             public void onError(String error) {
                 Gdx.app.postRunnable(() -> {
-                    if (error.toLowerCase().contains("timeout")) errorLabel.setText("Server timeout.");
+                    if (error.toLowerCase().contains("timeout")) errorLabel.setText("Server is waking up, please try again.");
                     else errorLabel.setText("Invalid Username/Password");
                     errorLabel.setVisible(true);
                 });
