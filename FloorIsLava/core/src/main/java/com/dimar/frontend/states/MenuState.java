@@ -53,6 +53,7 @@ public class MenuState implements GameState {
         bgMusic.setVolume(0.5f); // Set volume 50%
         bgMusic.play();
 
+        Gdx.input.setCursorCatched(false);
         createBasicSkin();
         buildUI();
     }
@@ -65,17 +66,23 @@ public class MenuState implements GameState {
         Texture loginTexture = new Texture(Gdx.files.internal("menu/login-button.png"));
         Texture playHoverTexture = new Texture(Gdx.files.internal("menu/play-button-hover.png"));
         Texture loginHoverTexture = new Texture(Gdx.files.internal("menu/login-button-hover.png"));
+        Texture exitTexture = new Texture(Gdx.files.internal("menu/EXIT.png"));
+        Texture exitHoverTexture = new Texture(Gdx.files.internal("menu/EXIT_Hover.png"));
 
         // Filter Pixel
         playTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         loginTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         playHoverTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         loginHoverTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        exitTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        exitHoverTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         skin.add("playTexture", playTexture);
         skin.add("loginTexture", loginTexture);
         skin.add("playHoverTexture", playHoverTexture);
         skin.add("loginHoverTexture", loginHoverTexture);
+        skin.add("exitTexture", exitTexture);
+        skin.add("exitHoverTexture", exitHoverTexture);
 
         // Font
         BitmapFont defaultFont = new BitmapFont();
@@ -94,7 +101,6 @@ public class MenuState implements GameState {
         // Palet Warna
         Color titleColor = new Color(0.9f, 0.3f, 0.0f, 1f);
         Color skyTextColor = new Color(0.1f, 0.1f, 0.35f, 1f);
-        Color groundTextColor = new Color(1.0f, 0.85f, 0.25f, 1f);
 
         // Styles
         Label.LabelStyle titleStyle = new Label.LabelStyle();
@@ -139,6 +145,11 @@ public class MenuState implements GameState {
         wrapperTable.add(leaderboardTable).width(350f).height(450f);
         stage.addActor(wrapperTable);
 
+        Table Exit = new Table();
+        Exit.setFillParent(true);
+        Exit.align(Align.bottomLeft).padBottom(Gdx.graphics.getHeight()/40f).padLeft(Gdx.graphics.getWidth()/ 30f);
+        stage.addActor(Exit);
+
         // Judul dengan Animasi
         Label judul = new Label("FLOOR IS LAVA", skin, "titleStyle");
         judul.setFontScale(1.5f); // Default scale
@@ -174,6 +185,9 @@ public class MenuState implements GameState {
         TextureRegionDrawable loginUp = new TextureRegionDrawable(new TextureRegion(skin.get("loginTexture", Texture.class)));
         TextureRegionDrawable loginOver = new TextureRegionDrawable(new TextureRegion(skin.get("loginHoverTexture", Texture.class)));
 
+        TextureRegionDrawable exitUp = new TextureRegionDrawable(new TextureRegion(skin.get("exitTexture", Texture.class)));
+        TextureRegionDrawable exitOver = new TextureRegionDrawable(new TextureRegion(skin.get("exitHoverTexture", Texture.class)));
+
         ImageButton.ImageButtonStyle playStyle = new ImageButton.ImageButtonStyle();
         playStyle.imageUp = playUp;
         playStyle.imageOver = playOver;
@@ -182,14 +196,21 @@ public class MenuState implements GameState {
         loginStyle.imageUp = loginUp;
         loginStyle.imageOver = loginOver;
 
+        ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
+        exitStyle.imageUp = exitUp;
+        exitStyle.imageOver = exitOver;
+
         ImageButton playButton = new ImageButton(playStyle);
         ImageButton loginButton = new ImageButton(loginStyle);
+        ImageButton exitButton = new ImageButton(exitStyle);
 
         // Set Origin Center buat scaling/perbesaran
         playButton.setTransform(true);
         playButton.setOrigin(Align.center);
         loginButton.setTransform(true);
         loginButton.setOrigin(Align.center);
+        exitButton.setTransform(true);
+        exitButton.setOrigin(Align.center);
 
         // Listener Play Button
         playButton.addListener(new ClickListener() {
@@ -253,6 +274,36 @@ public class MenuState implements GameState {
             }
         });
 
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clickSound.play(); // Play Click Sound
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                Gdx.app.exit();
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1) {
+                    hoverSound.play(); // Play Hover Sound
+                    exitButton.clearActions();
+                    exitButton.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+                }
+                super.enter(event, x, y, pointer, fromActor);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (pointer == -1) {
+                    exitButton.clearActions();
+                    exitButton.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f));
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
+                super.exit(event, x, y, pointer, toActor);
+            }
+        });
+
         mainTable.add(playButton).width(360f).height(90f).padRight(-250f);
         mainTable.add(loginButton).width(360f).height(90f).padLeft(-250f);
         mainTable.row();
@@ -260,6 +311,9 @@ public class MenuState implements GameState {
         // Update Origin setelah layouting
         playButton.setOrigin(180f, 45f);
         loginButton.setOrigin(180f, 45f);
+        exitButton.setOrigin(180f, 45f);
+
+        Exit.add(exitButton).width(140f).height(70f);
 
         // Leaderboard
         Label leaderboardLabel = new Label("Loading...", skin, "leaderboard");

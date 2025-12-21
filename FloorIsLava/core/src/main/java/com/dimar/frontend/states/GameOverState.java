@@ -38,6 +38,7 @@ public class GameOverState implements GameState {
         this.finalScore = com.dimar.frontend.GameManager.getInstance().getScore();
         this.finalCoins = com.dimar.frontend.GameManager.getInstance().getCoinsCollected();
 
+        Gdx.input.setCursorCatched(true);
         deathImage = new Texture(Gdx.files.internal("death.png"));
         font = new BitmapFont(Gdx.files.internal("04b30.fnt"));
         font.setColor(Color.RED);

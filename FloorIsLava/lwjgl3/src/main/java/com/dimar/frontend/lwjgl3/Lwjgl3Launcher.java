@@ -1,5 +1,6 @@
 package com.dimar.frontend.lwjgl3;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.dimar.frontend.Main;
@@ -18,6 +19,8 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
+        //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
         configuration.setTitle("FloorIsLava");
         //// Vsync limits the frames per second to what your hardware can display, and helps eliminate
         //// screen tearing. This setting doesn't always work on Linux, so the line after is a safeguard.

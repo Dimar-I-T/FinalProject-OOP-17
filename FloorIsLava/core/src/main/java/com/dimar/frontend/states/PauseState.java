@@ -50,6 +50,7 @@ public class PauseState implements GameState {
         stage = new Stage(new ExtendViewport(1280, 720));
         Gdx.input.setInputProcessor(stage); // Set input ke UI Stage
 
+        Gdx.input.setCursorCatched(false);
         loadAssets();
         buildUI();
     }

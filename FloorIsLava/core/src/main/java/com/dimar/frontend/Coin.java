@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Coin {
     private final Vector2 position;
     private final Rectangle collider;
-    private final float radius = 10f;
+    private final float radius = 25f;
     private boolean active;
 
     private float bobOffset;
@@ -61,9 +61,9 @@ public class Coin {
     }
 
     public void render(SpriteBatch batch) {
-        float renderSize = 3.5f * radius;
+        float renderSize = 1.5f * radius;
         float drawY = position.y + (float)(Math.sin(bobOffset) * 5f);
-        batch.draw(currentFrame, position.x, drawY, renderSize, renderSize);
+        batch.draw(currentFrame, position.x - this.radius, drawY, renderSize, renderSize);
     }
 
     public boolean isColliding(Rectangle playerCollider) {

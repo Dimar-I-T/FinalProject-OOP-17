@@ -122,6 +122,7 @@ public class PlayingState implements GameState {
 
         dashUnavailable = new Texture("dash/DASH.png");
         dashAvailable = new Texture("dash/DASH_ACTIVE.png");
+        Gdx.input.setCursorCatched(true);
     }
 
     public void setPaused(boolean paused) {

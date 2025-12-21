@@ -17,6 +17,7 @@ public class ControlState implements GameState {
         this.texture = new Texture("controls.png");
         this.width = Gdx.graphics.getWidth();
         this.height = Gdx.graphics.getHeight();
+        Gdx.input.setCursorCatched(true);
     }
 
     @Override
