@@ -1,6 +1,7 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,7 +17,6 @@ import com.dimar.frontend.*;
 import com.dimar.frontend.commands.*;
 import com.dimar.frontend.factories.CoinFactory;
 import com.dimar.frontend.factories.GroundsFactory;
-//import com.dimar.frontend.observers.DashUI;
 import com.dimar.frontend.observers.ScoreUIObserver;
 import com.dimar.frontend.strategies.*;
 
@@ -34,7 +34,6 @@ public class PlayingState implements GameState {
     private final Lava lava;
     private final OrthographicCamera camera;
     private final ScoreUIObserver scoreUIObserver;
-    //private final DashUI dashUI;
     private final Random random = new Random();
     private final GroundsFactory groundsFactory;
     private float maxWidth, maxHeight;
@@ -65,13 +64,14 @@ public class PlayingState implements GameState {
     private boolean isPaused = false;
 
     private Sound coinSound;
+    private Music bgMusic;
+    private String currentMusicFile = ""; // Melacak file musik aktif
 
     private Texture dashUnavailable;
     private Texture dashAvailable;
 
     public PlayingState(GameStateManager gsm) {
         this.gsm = gsm;
-        //dashUI = new DashUI();
         BitmapFont fontDash = new BitmapFont(Gdx.files.internal("arial.fnt"));
         fontDash.setColor(Color.WHITE);
         toRelease = new ArrayList<>();
@@ -94,7 +94,13 @@ public class PlayingState implements GameState {
         dashCommand.add(new DashKiriCommand(player));
         dashCommand.add(new DashKananCommand(player));
         lava = new Lava(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL), 2 * Gdx.graphics.getWidth(), 1000f);
+
+        // Load Asset Suara
+        coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/coin-collected.wav"));
+
+        // Init Difficulty (Ini akan memicu updateMusic otomatis ke easy.wav)
         setDifficulty(new VeryEasyDifficulty());
+
         batasNaikDifficulty = difficultyStrategy.getBatasNaikDifficulty();
         ground = new Ground(new Vector2(-Gdx.graphics.getWidth() / 2f, -450), 2 * Gdx.graphics.getWidth(), 500f, false);
         ground.setTexture(new Texture("Cobblestone.jpg"));
@@ -113,14 +119,17 @@ public class PlayingState implements GameState {
 
         background = new Background();
 
-        coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/coin-collected.wav"));
-
         dashUnavailable = new Texture("dash/DASH.png");
         dashAvailable = new Texture("dash/DASH_ACTIVE.png");
     }
 
     public void setPaused(boolean paused) {
         this.isPaused = paused;
+        // Pause/Resume musik sesuai state
+        if (bgMusic != null) {
+            if (paused) bgMusic.pause();
+            else bgMusic.play();
+        }
     }
 
     public boolean isPaused() {
@@ -155,25 +164,15 @@ public class PlayingState implements GameState {
 
         spriteBatch.end();
         shapeRenderer.setProjectionMatrix(camera.combined);
-        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        for (Grounds grounds1 : groundsFactory.getInUse()) {
-//            grounds1.renderShape(shapeRenderer);
-//        }
-
-
-
-        //ground.render(shapeRenderer);
-
-
-//        lava.render(shapeRenderer);
-        //shapeRenderer.end();
         scoreUIObserver.render(scoreUIObserver.getScore(), gameManager.getCoinsCollected(), difficultyStrategy.getMode());
-//        if (bisaDash) {
-//            dashUI.render();
-//        }
     }
 
     public void update(float delta) {
+        // Fix delta spike saat loading
+        if (delta > 0.1f) {
+            delta = 0.016f;
+        }
+
         if (player.getIsDead()) {
             gameManager.endGame();
             reset();
@@ -301,6 +300,37 @@ public class PlayingState implements GameState {
     public void setDifficulty(DifficultyStrategy difficultyStrategy) {
         this.difficultyStrategy = difficultyStrategy;
         lava.setKecepatan(difficultyStrategy.getKecepatanLava());
+
+        // Update musik setiap ganti difficulty
+        updateMusic(difficultyStrategy);
+    }
+
+    private void updateMusic(DifficultyStrategy strategy) {
+        String newMusicFile = "audio/music/easy.wav"; // Default untuk VeryEasy & Easy
+
+        if (strategy instanceof MediumDifficulty) {
+            newMusicFile = "audio/music/medium.wav";
+        } else if (strategy instanceof HardDifficulty || strategy instanceof VeryHardDifficulty || strategy instanceof ExtremeDifficulty) {
+            newMusicFile = "audio/music/hard.wav";
+        }
+
+        // Hanya ganti jika file beda
+        if (!newMusicFile.equals(currentMusicFile)) {
+            if (bgMusic != null) {
+                bgMusic.stop();
+                bgMusic.dispose();
+            }
+            try {
+                bgMusic = Gdx.audio.newMusic(Gdx.files.internal(newMusicFile));
+                bgMusic.setLooping(true);
+                // VOLUME BACKGROUND
+                bgMusic.setVolume(0.2f);
+                if (!isPaused) bgMusic.play();
+                currentMusicFile = newMusicFile;
+            } catch (Exception e) {
+                System.out.println("Gagal load musik: " + newMusicFile);
+            }
+        }
     }
 
     public void hitungLevel() {
@@ -313,8 +343,7 @@ public class PlayingState implements GameState {
         while (iterator.hasNext()) {
             Coin coin = iterator.next();
             if (coin.isColliding(colliderPlayer)) {
-                // Play Sound coin volume 30%
-                coinSound.play(0.3f);
+                coinSound.play(1.0f);
 
                 gameManager.addCoin();
                 coin.setActive(false);
@@ -428,7 +457,6 @@ public class PlayingState implements GameState {
     }
 
     public void reset() {
-        //System.out.println("terpanggil");
         lava.reset(new Vector2(-Gdx.graphics.getWidth() / 2f, POSISI_Y_AWAL));
         toRelease.clear();
         coinsToRelease.clear();
@@ -437,6 +465,8 @@ public class PlayingState implements GameState {
         currentScore = 0f;
         gameManager.setScore(0);
         gameManager.setCoinsCollected(0);
+
+        // Reset music via setDifficulty (Kembali ke VeryEasy -> easy.wav)
         setDifficulty(new VeryEasyDifficulty());
 
         groundsFactory.releaseAll();
@@ -463,5 +493,9 @@ public class PlayingState implements GameState {
         coinFactory.releaseAll();
         player.dispose();
         coinSound.dispose();
+        if (bgMusic != null) {
+            bgMusic.stop();
+            bgMusic.dispose();
+        }
     }
 }

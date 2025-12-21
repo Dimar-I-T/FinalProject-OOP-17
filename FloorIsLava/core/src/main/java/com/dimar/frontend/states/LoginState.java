@@ -1,6 +1,7 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music; // Import Music
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -34,6 +35,7 @@ public class LoginState implements GameState {
     // Sound Effects
     private Sound clickSound;
     private Sound hoverSound;
+    private Music bgMusic; // Musik Background
 
     public LoginState(GameStateManager gsm) {
         background = new LoginBackground();
@@ -44,6 +46,12 @@ public class LoginState implements GameState {
         // Load Audio
         clickSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/click.wav"));
         hoverSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/hover.wav"));
+
+        // Load & Play Music
+        bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/music/title-screen.wav"));
+        bgMusic.setLooping(true);
+        bgMusic.setVolume(0.5f);
+        bgMusic.play();
 
         createBasicSkin();
         buildUI();
@@ -131,8 +139,7 @@ public class LoginState implements GameState {
         // bikin background
         TextureRegionDrawable fieldBg = createRoundedRect(700, 80, 20, Color.WHITE);
         // SET PADDING
-        // padding atas bawah biar teksnya kedorong ke tengah.
-        fieldBg.setPadding(25f, 25f, 20f, 20f); // Top, Bottom, Left, Right
+        fieldBg.setPadding(25f, 25f, 20f, 20f);
         textFieldStyle.background = fieldBg;
 
         textFieldStyle.cursor = skin.newDrawable("black");
@@ -349,5 +356,8 @@ public class LoginState implements GameState {
         background.dispose();
         clickSound.dispose();
         hoverSound.dispose();
+        // Stop & Dispose Music
+        bgMusic.stop();
+        bgMusic.dispose();
     }
 }

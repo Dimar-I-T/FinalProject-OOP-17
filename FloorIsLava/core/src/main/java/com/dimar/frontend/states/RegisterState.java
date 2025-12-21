@@ -1,6 +1,7 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music; // Import Music
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -34,6 +35,7 @@ public class RegisterState implements GameState {
     // Sound Effects
     private Sound clickSound;
     private Sound hoverSound;
+    private Music bgMusic; // Musik Background
 
     public RegisterState(GameStateManager gsm) {
         background = new LoginBackground();
@@ -44,6 +46,12 @@ public class RegisterState implements GameState {
         // Load Audio
         clickSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/click.wav"));
         hoverSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/hover.wav"));
+
+        // Load & Play Music
+        bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/music/title-screen.wav"));
+        bgMusic.setLooping(true);
+        bgMusic.setVolume(0.5f);
+        bgMusic.play();
 
         createBasicSkin();
         buildUI();
@@ -67,7 +75,7 @@ public class RegisterState implements GameState {
     private void createBasicSkin() {
         skin = new Skin();
 
-        // Font Pixel (Sama kyk Login)
+        // Font Pixel
         BitmapFont pixelFont = new BitmapFont(Gdx.files.internal("04b30.fnt"));
         pixelFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         skin.add("pixelFont", pixelFont);
@@ -81,7 +89,7 @@ public class RegisterState implements GameState {
 
         pixmapBlack.dispose(); pixmapGray.dispose();
 
-        // 3. LOAD GAMBAR TOMBOL (Register & Menu)
+        // LOAD GAMBAR TOMBOL (Register & Menu)
         // Asset untuk Register
         Texture registerUp = new Texture("register/register-button.png");
         registerUp.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -323,5 +331,7 @@ public class RegisterState implements GameState {
         background.dispose();
         clickSound.dispose();
         hoverSound.dispose();
+        bgMusic.stop();
+        bgMusic.dispose();
     }
 }
