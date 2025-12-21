@@ -23,6 +23,7 @@ public class MenuBackground {
     private Player player;
     private Ground ground;
     private OrthographicCamera camera;
+    private Texture grassTexture;
 
     public MenuBackground() {
         backgroundTexture = new Texture(Gdx.files.internal("menu/SKY/1.png"));
@@ -34,6 +35,7 @@ public class MenuBackground {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
         camera.update();
+        grassTexture = new Texture("menu/GROUND/Grass.png");
 
         ground = new Ground(new Vector2(0f,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
         ground.setTexture(new Texture("menu/GROUND/dirt.jpg"));
@@ -64,7 +66,7 @@ public class MenuBackground {
             c.render(batch);
         }
 //        batch.end();
-        ground.renderTexture(batch, ground.getHeight() / 2f, true, new Texture("menu/GROUND/Grass.png"));
+        ground.renderTexture(batch, ground.getHeight() / 2f, true, grassTexture);
 //        batch.begin();
         player.renderTexture(batch);
         batch.end();
