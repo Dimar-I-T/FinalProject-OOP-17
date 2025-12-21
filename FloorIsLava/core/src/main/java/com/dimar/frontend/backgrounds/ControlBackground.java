@@ -23,6 +23,7 @@ public class ControlBackground {
     private Player player;
     private Ground ground;
     private OrthographicCamera camera;
+    private Texture grassTexture;
 
     public ControlBackground() {
         backgroundTexture = new Texture(Gdx.files.internal("control/SKY/1.png"));
@@ -34,6 +35,7 @@ public class ControlBackground {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
         camera.update();
+        grassTexture = new Texture("control/GROUND/Grass.png");
 
         ground = new Ground(new Vector2(0f,-5f), 2 * Gdx.graphics.getWidth(), 150f, false);
         ground.setTexture(new Texture("control/GROUND/dirt.jpg"));
@@ -62,7 +64,7 @@ public class ControlBackground {
             c.render(batch);
         }
 //        batch.end();
-        ground.renderTexture(batch, ground.getHeight() / 2f, true, new Texture("control/GROUND/Grass.png"));
+        ground.renderTexture(batch, ground.getHeight() / 2f, true, grassTexture);
 //        batch.begin();
         player.renderTexture(batch);
         batch.end();
