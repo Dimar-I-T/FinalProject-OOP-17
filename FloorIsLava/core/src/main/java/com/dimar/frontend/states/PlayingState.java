@@ -439,12 +439,12 @@ public class PlayingState implements GameState {
             float y = ground.getPosition().y;
             float height = ground.getHeight();
             float randX = 0.5f * random.nextFloat() * width;
-            float radius = 10f;
+            float radius = 3.5f * 10f;
             float spacing = 30f;
             int n = (int) ((width - randX + spacing - 2*radius) / spacing);
             int r = random.nextInt(10);
             if (r < 2) {
-                spawnCoins(radius + x + randX, y + height + radius + 15f, n);
+                spawnCoins(radius + x + randX, y + height + 15f, n);
             }
         }
     }
