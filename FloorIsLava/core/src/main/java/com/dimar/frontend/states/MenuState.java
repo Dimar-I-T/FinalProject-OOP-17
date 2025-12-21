@@ -1,6 +1,7 @@
 package com.dimar.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music; // Import Music
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -33,6 +34,7 @@ public class MenuState implements GameState {
     private Skin skin;
     private Sound clickSound; // suara Klik
     private Sound hoverSound; // suara Hover
+    private Music bgMusic;    // Musik Background
 
     public MenuState(GameStateManager gsm) {
         background = new MenuBackground();
@@ -43,6 +45,12 @@ public class MenuState implements GameState {
         // Load Sounds
         clickSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/click.wav"));
         hoverSound = Gdx.audio.newSound(Gdx.files.internal("audio/sound/hover.wav"));
+
+        // Load & Play Music Loop
+        bgMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/music/title-screen.wav"));
+        bgMusic.setLooping(true);
+        bgMusic.setVolume(0.5f); // Set volume 50%
+        bgMusic.play();
 
         createBasicSkin();
         buildUI();
@@ -123,7 +131,7 @@ public class MenuState implements GameState {
 
         // Judul dengan Animasi
         Label judul = new Label("FLOOR IS LAVA", skin, "titleStyle");
-        judul.setFontScale(1f);
+        judul.setFontScale(2.0f); // Default scale
         judul.addAction(Actions.forever(
             Actions.sequence(
                 Actions.moveBy(0, 15f, 1f, Interpolation.sineOut),
@@ -135,17 +143,17 @@ public class MenuState implements GameState {
 
         // Info Player
         Label playerLabel = new Label("Hello, Guest!", skin, "infoStyle");
-        playerLabel.setFontScale(0.5f);
+        playerLabel.setFontScale(1.0f);
         mainTable.add(playerLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label skorLabel = new Label("", skin, "infoStyle");
-        skorLabel.setFontScale(0.5f);
+        skorLabel.setFontScale(1.0f);
         mainTable.add(skorLabel).padBottom(10f).colspan(2);
         mainTable.row();
 
         Label coinsCollectedLabel = new Label("", skin, "infoStyle");
-        coinsCollectedLabel.setFontScale(0.5f);
+        coinsCollectedLabel.setFontScale(1.0f);
         mainTable.add(coinsCollectedLabel).padBottom(50f).colspan(2);
         mainTable.row();
 
@@ -239,7 +247,7 @@ public class MenuState implements GameState {
         mainTable.add(loginButton).width(360f).height(90f).padLeft(-45f);
         mainTable.row();
 
-        // Update Origin setelah layouting (Ukuran tombol 720x180 menjadi 360, 90)
+        // Update Origin setelah layouting
         playButton.setOrigin(180f, 45f);
         loginButton.setOrigin(180f, 45f);
 
@@ -299,5 +307,7 @@ public class MenuState implements GameState {
         skin.dispose();
         clickSound.dispose();
         hoverSound.dispose();
+        bgMusic.stop();
+        bgMusic.dispose();
     }
 }
