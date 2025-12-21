@@ -175,8 +175,10 @@ public class PlayingState implements GameState {
 
         if (player.getIsDead()) {
             gameManager.endGame();
+            if (bgMusic != null) {
+                bgMusic.stop();
+            }
             gsm.set(new GameOverState(gsm));
-            reset();
             return;
         }
 
@@ -306,6 +308,7 @@ public class PlayingState implements GameState {
     }
 
     private void updateMusic(DifficultyStrategy strategy) {
+        if (player != null && player.getIsDead()) return;
         String newMusicFile = "audio/music/easy.wav"; // Default untuk VeryEasy & Easy
 
         if (strategy instanceof MediumDifficulty) {
@@ -319,6 +322,7 @@ public class PlayingState implements GameState {
             if (bgMusic != null) {
                 bgMusic.stop();
                 bgMusic.dispose();
+                bgMusic = null;
             }
             try {
                 bgMusic = Gdx.audio.newMusic(Gdx.files.internal(newMusicFile));
@@ -467,6 +471,7 @@ public class PlayingState implements GameState {
         gameManager.setCoinsCollected(0);
 
         // Reset music via setDifficulty (Kembali ke VeryEasy -> easy.wav)
+        currentMusicFile = "";
         setDifficulty(new VeryEasyDifficulty());
 
         groundsFactory.releaseAll();
